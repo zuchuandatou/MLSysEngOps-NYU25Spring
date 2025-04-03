@@ -43,10 +43,10 @@ conditions under which it may be used. -->
 
 |              | How it was created | Conditions of use |
 |--------------|--------------------|-------------------|
-| Data set 1   |                    |                   |
-| Data set 2   |                    |                   |
-| Base model 1 |                    |                   |
-| etc          |                    |                   |
+| MovieLens 1B   |  Collected by GroupLens Research from user rating activity over time.                  |   Available for non-commercial research use only.                |
+| Enhanced MovieLens   |   Enriching the MovieLens dataset by incorporating metadata available on the web (such as cast, description, keywords, etc.) and movie trailers                 |     Creative Commons Attribution Non Commercial Share Alike 4.0 International              |
+| Stochastic Shared Embedding-based Personalized Transformer |                      Created for NYU ECE-7123 Deep Learning Final Project              |  Available for non-commercial research use only. |
+
 
 
 ### Summary of infrastructure requirements
