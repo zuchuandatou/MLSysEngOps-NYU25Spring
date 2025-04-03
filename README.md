@@ -43,6 +43,8 @@ all the data. -->
 
 ![Sys Diagram](images/sys_diagram.png)
 
+![Sys Diagram Revisited](images/sys_diagram2.png)
+(Refined System Diagram after Lightning Presentation)
 ### Summary of outside materials
 
 <!-- In a table, a row for each dataset, foundation model. 
