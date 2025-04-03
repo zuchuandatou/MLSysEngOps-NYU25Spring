@@ -35,7 +35,7 @@ link to their contributions in all repos here. -->
 Must include: all the hardware, all the containers/software platforms, all the models, 
 all the data. -->
 
-![Sys Diagram](images\sys_diagram.png)
+![Sys Diagram](images/sys_diagram.png)
 
 ### Summary of outside materials
 
