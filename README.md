@@ -57,10 +57,10 @@ The table below shows an example, it is not a recommendation. -->
 
 | Requirement     | How many/when                                     | Justification |
 |-----------------|---------------------------------------------------|---------------|
-| `m1.medium` VMs | 3 for entire project duration                     | ...           |
-| `gpu_mi100`     | 4 hour block twice a week                         |               |
-| Floating IPs    | 1 for entire project duration, 1 for sporadic use |               |
-| etc             |                                                   |               |
+| `m1.medium` VMs | 3 for entire project duration                     | Used for orchestration components like ArgoCD, Helm, and Kubernetes master/control plane.        |
+| `gpu_a100`      | 4 hour blockm, 3 times a week                     |  Required for distributed training with Ray Train and hyperparameter tuning with Ray Tune.             |
+| Floating IPs    | 1 for entire project duration, 1 for sporadic use | One for accessing services (eg., FastAPI, Grafana); one temporary for debug/test deployments.              |
+| Persistent Storage | 100G for entire project duration               | Storage needed for training data, model checkpoints, logs, and MLFlow tracking.
 
 ### Detailed design plan
 
@@ -73,6 +73,14 @@ diagram, (3) justification for your strategy, (4) relate back to lecture materia
 <!-- Make sure to clarify how you will satisfy the Unit 4 and Unit 5 requirements, 
 and which optional "difficulty" points you are attempting. -->
 
+We trained and re-trained a Transformer-based model (SSE-PT) for session-based recommendations using both the MovieLens-1M and Wiki1000 datasets, demonstrating modeling choices grounded in recent research.
+We plan to scale training using Ray Train and compare distributed vs. single-GPU training to explore strategies for large models.
+We will host an experiment tracking server (e.g., MLflow) on Chameleon Cloud and log all experiments.
+Additionally, we will deploy a Ray cluster on Chameleon and schedule our training jobs there, with the goal of integrating Ray Tune for hyperparameter tuning to gain extra difficulty points.
+
+##### Difficulty Point: Interactive Dashboard
+- Use Ray Tune for hyperparameter tuning
+
 #### Model serving and monitoring platforms
 
 <!-- Make sure to clarify how you will satisfy the Unit 6 and Unit 7 requirements, 
@@ -83,6 +91,19 @@ and which optional "difficulty" points you are attempting. -->
 <!-- Make sure to clarify how you will satisfy the Unit 8 requirements,  and which 
 optional "difficulty" points you are attempting. -->
 
+##### Persistent storage:
+- Using Chameleon's storage (Ceph)
+##### Offline Data:
+- `raw-data/` → Raw movie data (MovieLens dataset)
+- `processed-data/` → Cleaned-up data
+- `models/` → Trained models
+- `logs/` → User activity logs
+##### Online Data: 
+- Simulate user interaction with movie data
+##### Data Pipeline:
+[Data Sources] → [Ingestion] → [Cleaning] → [Feature Store]
+##### Difficulty Point: Interactive Dashboard
+- Use Grafana to visualize user activity pattern and recommendation performance
 
 
 #### Continuous X
@@ -91,13 +112,11 @@ optional "difficulty" points you are attempting. -->
 optional "difficulty" points you are attempting. -->
 
 
-## Detailed Design Plan – Continuous X
-
-### Strategy
+##### Strategy
 
 To meet the Unit 3 DevOps requirements, our project will follow a cloud-native, infrastructure-as-code approach with fully automated CI/CD and continuous training pipelines. Our infrastructure and services will be defined declaratively using Terraform and Helm, and stored in a Git repository. We will adopt a microservices architecture, containerizing each service using Docker and orchestrating deployments via Kubernetes. The CI/CD pipeline will handle model training, evaluation, container packaging, and staged deployment (staging → canary → production) automatically.
 
-### Relevant Diagram Components
+##### Relevant Diagram Components
 
 - **Infrastructure Layer**: Defined in Terraform and provisioned on the cloud provide Chameleon, and potentially possibility to extend to commercial clouds(e.g., GCP or AWS), using Kubernetes as the orchestration platform.
 - **Model Training Pipeline**: Built using Argo Workflows, triggered by commits to the training code or data updates.
