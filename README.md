@@ -81,57 +81,59 @@ diagram, (3) justification for your strategy, (4) relate back to lecture materia
 <!-- Make sure to clarify how you will satisfy the Unit 4 and Unit 5 requirements, 
 and which optional "difficulty" points you are attempting. -->
 
-We trained and re-trained a Transformer-based model (SSE-PT) for session-based recommendations using both the MovieLens-1M and Wiki1000 datasets, demonstrating modeling choices grounded in recent research.
-We plan to scale training using Ray Train and compare distributed vs. single-GPU training to explore strategies for large models.
-We will host an experiment tracking server (e.g., MLflow) on Chameleon Cloud and log all experiments.
-Additionally, we will deploy a Ray cluster on Chameleon and schedule our training jobs there, with the goal of integrating Ray Tune for hyperparameter tuning to gain extra difficulty points.
+##### Model Serving: 
+A RESTful API endpoint will be implemented using FastAPI. The service will be containerized and deployed on Kubernetes with support for asynchronous and batched inference. 
 
-##### Difficulty Point: Interactive Dashboard
-- Use Ray Train for model training
-- Use Ray Tune for hyperparameter tuning
+##### Performance Requirements:
+The system targets low-latency online inference and efficient batch throughput, with support for concurrent requests.
 
-#### Model serving and monitoring platforms
+##### Model-Level Optimizations:
+- Export models to ONNX format
+- Apply graph optimizations and post-training quantization (both static and dynamic)
+- Use hardware-specific backends like TensorRT and OpenVINO
 
-<!-- Make sure to clarify how you will satisfy the Unit 6 and Unit 7 requirements, 
-and which optional "difficulty" points you are attempting. -->
+##### System-Level Optimizations:
+- Enable request batching
+- Use Kubernetes HPA for autoscaling
+- All components will run in containers for isolated, scalable deployments
 
-Unit 6: Model Serving
-We will use  FastAPI to implement A RESTful API endpoint; containerize and deploy service on Kubernetes with support for asynchronous and batched inference.
+##### Performance Requirements
+- `raw-data/` → Raw movie data (MovieLens dataset)
+- `processed-data/` → Cleaned-up data
+- `models/` → Trained models
+- `logs/` → User activity logs
 
-Performance Requirements: system will target low-latency online inference and efficient batch throughput, with support for concurrent requests.
+##### Multiple Deployment Targets (Extra Difficulty Point):
+- GPU-based serving
+- CPU-only serving
+- Edge-device (quantized, lightweight model for mobile/offline use)
 
-Model-Level Optimizations: 
-Export models to ONNX format
-Apply graph optimizations and post-training quantization (both static and dynamic)
-Use hardware-specific backends like TensorRT and OpenVINO
+#### Evaluation & Monitoring
+A RESTful API endpoint will be implemented using FastAPI. The service will be containerized and deployed on Kubernetes with support for asynchronous and batched inference. 
 
-System-Level Optimizations:
-Enable request batching
-Use Kubernetes HPA for autoscaling
-All components will run in containers for isolated, scalable deployments
+##### Offline Evaluation:
+After each training run, automated scripts will evaluate accuracy, diversity, cold-start coverage, etc.
+Results will be logged to MLflow, and used to determine model registration.
 
-Multiple Deployment Targets (Extra Difficulty Point):
-GPU-based serving
-CPU-only serving
-Edge-device (quantized, lightweight model for mobile/offline use)
+##### Staging Load Testing:
+Deploy the service to a staging environment and run load tests to validate latency, error rates, and container stability under traffic.
 
-Unit 7: Evaluation & Monitoring: 
-After each training run, we  will use automated scripts to evaluate accuracy, diversity, cold-start coverage, etc.; and log results to MLflow to determine model.
-
-Staging Load Testing: we will deploy the service to a staging environment and run load tests to validate latency, error rates, and container stability under traffic.
-
-Canary Deployment: we will gradually route a portion of traffic to a canary model version for online evaluation.
+##### Canary Deployment:
+Gradually route a portion of traffic to a canary model version for online evaluation.
 Compare key metrics (e.g., click-through rate) with the production version before full rollout.
 
-Feedback Loop: we will log user interactions (e.g., views, clicks) to generate new training data for model retraining; and set up pipelines to transform logs into labeled data.
+##### Feedback Loop:
+Log user interactions (e.g., views, clicks) to generate new training data for model retraining.
+Set up pipelines to transform logs into labeled data.
 
-Business-Specific Evaluation Plan: 
-we will define metrics such as CTR improvement and recommendation diversity for business value assessment; simulate realistic user behavior for evaluation, if needed.
+##### Business-Specific Evaluation Plan:
+Define metrics such as CTR improvement and recommendation diversity for business value assessment.
+Simulate realistic user behavior for evaluation, if needed.
 
-Monitoring Capabilities (Extra Difficulty Point):
-Monitor data drift and model degradation in real-time
-Alert engineers and trigger retraining if needed
-Visualize model performance using dashboards
+##### Monitoring Capabilities (Extra Difficulty Point):
+- Monitor data drift and model degradation in real-time
+- Alert engineers and trigger retraining if needed
+- Visualize model performance using dashboards
 
 
 #### Data pipeline
