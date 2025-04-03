@@ -21,11 +21,11 @@ link to their contributions in all repos here. -->
 
 | Name                            | Responsible for | Link to their commits in this repo |
 |---------------------------------|-----------------|------------------------------------|
-| All team members                |                 |                                    |
-| Team member 1                   |                 |                                    |
-| Team member 2                   |                 |                                    |
-| Team member 3                   |                 |                                    |
-| Team member 4 (if there is one) |                 |                                    |
+| All team members                | Rest of the project                |   -                                 |
+| Jiayi Zhang                   | Model Training                |    -                                |
+| Ziqi Zhou                   |  Model Serving               |   -                                 |
+| Ziyi Huang                   | Data Pipeline                |   -                                 |
+| Zehao Li |  Continuous X               |                                    |
 
 
 
@@ -35,6 +35,8 @@ link to their contributions in all repos here. -->
 Must include: all the hardware, all the containers/software platforms, all the models, 
 all the data. -->
 
+
+
 ### Summary of outside materials
 
 <!-- In a table, a row for each dataset, foundation model. 
@@ -43,9 +45,9 @@ conditions under which it may be used. -->
 
 |              | How it was created | Conditions of use |
 |--------------|--------------------|-------------------|
-| MovieLens 1B   |  Collected by GroupLens Research from user rating activity over time.                  |   Available for non-commercial research use only.                |
-| Enhanced MovieLens   |   Enriching the MovieLens dataset by incorporating metadata available on the web (such as cast, description, keywords, etc.) and movie trailers                 |     Creative Commons Attribution Non Commercial Share Alike 4.0 International              |
-| Stochastic Shared Embedding-based Personalized Transformer |                      Created for NYU ECE-7123 Deep Learning Final Project              |  Available for non-commercial research use only. |
+| [MovieLens 1B](https://grouplens.org/datasets/movielens/movielens-1b/)   |  Collected by GroupLens Research from user rating activity over time.                  |   Available for non-commercial research use only.                |
+| [Enhanced MovieLens](https://zenodo.org/records/8037433)   |   Enriching the MovieLens dataset by incorporating metadata available on the web (such as cast, description, keywords, etc.) and movie trailers                 |     Creative Commons Attribution Non Commercial Share Alike 4.0 International              |
+| [Stochastic Shared Embedding-based Personalized Transformer](https://github.com/hzsnow/NYU-ECE-GY-7123-Deep-Learning-Final-Project) |                      Created for NYU ECE-7123 Deep Learning Final Project              |  Available for non-commercial research use only. |
 
 
 
@@ -79,6 +81,7 @@ We will host an experiment tracking server (e.g., MLflow) on Chameleon Cloud and
 Additionally, we will deploy a Ray cluster on Chameleon and schedule our training jobs there, with the goal of integrating Ray Tune for hyperparameter tuning to gain extra difficulty points.
 
 ##### Difficulty Point: Interactive Dashboard
+- Use Ray Train for model training
 - Use Ray Tune for hyperparameter tuning
 
 #### Model serving and monitoring platforms
