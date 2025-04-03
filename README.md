@@ -13,7 +13,9 @@ propose a system for a science problem, for example.)
 
 ### Scalable MLOps System for Personalized Movie Recommendation with Real-Time Monitoring
 
-Current recommendation systems often rely on static models with limited adaptability to changing user behavior. Our project introduces an automated MLOps pipeline for personalized movie recommendations using the Enhanced MovieLens dataset and a Transformer-based model (SSE-PT). We streamline training, tuning, deployment, and monitoring using Ray, MLflow, FastAPI, and Kubernetes with GitOps support via ArgoCD and Helm.
+Current recommendation systems, including Netflix’s, often rely heavily on behavioral data and content metadata, using static models that lack adaptability to rapidly changing user preferences. These systems may overlook richer data modalities like audio and video content, limiting their ability to personalize in cold-start or nuanced scenarios.  
+
+Our project introduces an automated MLOps pipeline for personalized movie recommendations using the Enhanced MovieLens dataset which includes text, metadata, audio, and trailer transcriptions, and a Transformer-based model (SSE-PT). We streamline training, tuning, deployment, and monitoring using Ray, MLflow, FastAPI, and Kubernetes with GitOps support via ArgoCD and Helm.
 
 The system enables low-latency online inference, real-time performance tracking, and fast retraining cycles. Business metrics such as model responsiveness will guide evaluation, offering a scalable, adaptive alternative to traditional manual workflows.
 
@@ -27,11 +29,11 @@ link to their contributions in all repos here. -->
 
 | Name                            | Responsible for | Link to their commits in this repo |
 |---------------------------------|-----------------|------------------------------------|
-| All team members                | Rest of the project                |   -                                 |
-| Jiayi Zhang                   | Model Training                |    -                                |
-| Ziqi Zhou                   |  Model Serving               |   -                                 |
-| Ziyi Huang                   | Data Pipeline                |   -                                 |
-| Zehao Li |  Continuous X               |    -                                |
+| All team members                | Rest of the project                |    -                                |
+| Jiayi Zhang                     | Model Training                     |    -                                |
+| Ziqi Zhou                       | Model Serving                      |    -                                |
+| Ziyi Huang                      | Data Pipeline                      |    -                                |
+| Zehao Li                        | Continuous X                       |    -                                |
 
 
 
@@ -53,8 +55,8 @@ conditions under which it may be used. -->
 
 |              | How it was created | Conditions of use |
 |--------------|--------------------|-------------------|
-| [MovieLens 1B](https://grouplens.org/datasets/movielens/movielens-1b/)   |  Collected by GroupLens Research from user rating activity over time.                  |   Available for non-commercial research use only.                |
-| [Enhanced MovieLens](https://zenodo.org/records/8037433)   |   Enriching the MovieLens dataset by incorporating metadata available on the web (such as cast, description, keywords, etc.) and movie trailers                 |     Creative Commons Attribution Non Commercial Share Alike 4.0 International              |
+| [MovieLens 1B](https://grouplens.org/datasets/movielens/movielens-1b/)   (3.1GB)|  Collected by GroupLens Research from user rating activity over time.                  |   Available for non-commercial research use only.                |
+| [Enhanced MovieLens](https://zenodo.org/records/8037433)  (~50GB, but we only use 5GB) |   Enriching the MovieLens dataset by incorporating metadata available on the web (such as cast, description, keywords, etc.) and movie trailers                 |     Creative Commons Attribution Non Commercial Share Alike 4.0 International              |
 | [Stochastic Shared Embedding-based Personalized Transformer](https://github.com/hzsnow/NYU-ECE-GY-7123-Deep-Learning-Final-Project) |                      Created for NYU ECE-7123 Deep Learning Final Project              |  Available for non-commercial research use only. |
 
 
