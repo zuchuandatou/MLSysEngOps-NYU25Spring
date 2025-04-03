@@ -11,6 +11,12 @@ judged on? (Note that the “service” does not have to be for general users; y
 propose a system for a science problem, for example.)
 -->
 
+### Scalable MLOps System for Personalized Movie Recommendation with Real-Time Monitoring
+
+Current recommendation systems often rely on static models with limited adaptability to changing user behavior. Our project introduces an automated MLOps pipeline for personalized movie recommendations using the Enhanced MovieLens dataset and a Transformer-based model (SSE-PT). We streamline training, tuning, deployment, and monitoring using Ray, MLflow, FastAPI, and Kubernetes with GitOps support via ArgoCD and Helm.
+
+The system enables low-latency online inference, real-time performance tracking, and fast retraining cycles. Business metrics such as model responsiveness will guide evaluation, offering a scalable, adaptive alternative to traditional manual workflows.
+
 ### Contributors
 
 <!-- Table of contributors and their roles. 
