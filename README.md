@@ -35,7 +35,7 @@ link to their contributions in all repos here. -->
 Must include: all the hardware, all the containers/software platforms, all the models, 
 all the data. -->
 
-
+![Sys Diagram](images\sys_diagram.png)
 
 ### Summary of outside materials
 
@@ -88,6 +88,45 @@ Additionally, we will deploy a Ray cluster on Chameleon and schedule our trainin
 
 <!-- Make sure to clarify how you will satisfy the Unit 6 and Unit 7 requirements, 
 and which optional "difficulty" points you are attempting. -->
+
+Unit 6: Model Serving
+We will use  FastAPI to implement A RESTful API endpoint; containerize and deploy service on Kubernetes with support for asynchronous and batched inference.
+
+Performance Requirements: system will target low-latency online inference and efficient batch throughput, with support for concurrent requests.
+
+Model-Level Optimizations: 
+Export models to ONNX format
+Apply graph optimizations and post-training quantization (both static and dynamic)
+Use hardware-specific backends like TensorRT and OpenVINO
+
+System-Level Optimizations:
+Enable request batching
+Use Kubernetes HPA for autoscaling
+All components will run in containers for isolated, scalable deployments
+
+Multiple Deployment Targets (Extra Difficulty Point):
+GPU-based serving
+CPU-only serving
+Edge-device (quantized, lightweight model for mobile/offline use)
+
+Unit 7: Evaluation & Monitoring: 
+After each training run, we  will use automated scripts to evaluate accuracy, diversity, cold-start coverage, etc.; and log results to MLflow to determine model.
+
+Staging Load Testing: we will deploy the service to a staging environment and run load tests to validate latency, error rates, and container stability under traffic.
+
+Canary Deployment: we will gradually route a portion of traffic to a canary model version for online evaluation.
+Compare key metrics (e.g., click-through rate) with the production version before full rollout.
+
+Feedback Loop: we will log user interactions (e.g., views, clicks) to generate new training data for model retraining; and set up pipelines to transform logs into labeled data.
+
+Business-Specific Evaluation Plan: 
+we will define metrics such as CTR improvement and recommendation diversity for business value assessment; simulate realistic user behavior for evaluation, if needed.
+
+Monitoring Capabilities (Extra Difficulty Point):
+Monitor data drift and model degradation in real-time
+Alert engineers and trigger retraining if needed
+Visualize model performance using dashboards
+
 
 #### Data pipeline
 
