@@ -1,6 +1,23 @@
 
-## Title of project
 
+
+## Currently running services
+- Grafana
+  - username: admin
+  - password: mgWBn7Uez8PC2se
+  - url: http://129.114.25.224:3000/
+- Prometheus
+  - url: http://129.114.25.224:9090/
+- MinIO
+  - url: http://129.114.25.224:9001/
+- MLFlow
+  - url: http://129.114.25.224:8000/
+- ArgoCD (Port forward)
+  - useranme: admin
+  - passwrod: hLEni6BZiBUCqSUU
+  - url: https://127.0.0.1:8888/
+
+## Scalable MLOps System for Personalized Movie Recommendation with Real-Time Monitoring
 <!-- 
 Discuss: Value proposition: Your will propose a machine learning system that can be 
 used in an existing business or service. (You should not propose a system in which 
@@ -11,7 +28,6 @@ judged on? (Note that the “service” does not have to be for general users; y
 propose a system for a science problem, for example.)
 -->
 
-### Scalable MLOps System for Personalized Movie Recommendation with Real-Time Monitoring
 
 Current recommendation systems, including Netflix’s, often rely heavily on behavioral data and content metadata, using static models that lack adaptability to rapidly changing user preferences. These systems may overlook richer data modalities like audio and video content, limiting their ability to personalize in cold-start or nuanced scenarios.  
 
