@@ -1,22 +1,3 @@
-
-
-
-## Currently running services
-- Grafana
-  - username: admin
-  - password: mgWBn7Uez8PC2se
-  - url: http://129.114.25.224:3000/
-- Prometheus
-  - url: http://129.114.25.224:9090/
-- MinIO
-  - url: http://129.114.25.224:9001/
-- MLFlow
-  - url: http://129.114.25.224:8000/
-- ArgoCD (Port forward)
-  - useranme: admin
-  - passwrod: hLEni6BZiBUCqSUU
-  - url: https://127.0.0.1:8888/
-
 ## Scalable MLOps System for Personalized Movie Recommendation with Real-Time Monitoring
 <!-- 
 Discuss: Value proposition: Your will propose a machine learning system that can be 
