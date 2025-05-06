@@ -158,6 +158,8 @@ optional "difficulty" points you are attempting. -->
 
 
 #### Continuous X
+to pull code at jupyter interface:
+git clone --recurse-submodules https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git /work/MLSysEngOps-NYU25Spring
 
 <!-- Make sure to clarify how you will satisfy the Unit 3 requirements,  and which 
 optional "difficulty" points you are attempting. -->
