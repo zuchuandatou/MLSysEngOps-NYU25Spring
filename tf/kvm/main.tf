@@ -50,7 +50,7 @@ resource "openstack_blockstorage_volume_v3" "minio_volume" {
 resource "openstack_compute_instance_v2" "nodes" {
   for_each = var.nodes
 
-  name        = "${each.key}-mlops-${var.suffix}"
+  name        = "${each.key}-mlops-${var.suffix}-project37"
   image_name  = "CC-Ubuntu24.04"
   flavor_name = "m1.medium"
   key_pair    = var.key
