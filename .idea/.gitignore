@@ -1,0 +1,51 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+*.sqlite3
+
+# --- Jupyter Notebooks ---
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+*.checkpoint.ipynb
+
+# --- PyCharm ---
+.idea/
+*.iml
+/shelf/
+/workspace.xml
+/httpRequests/
+/dataSources/
+/dataSources.local.xml
+
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# macOS Folder Attributes
+.DocumentRevisions-V100/
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# macOS System Files
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# --- Virtual Environments ---
+venv/
+env/
+.venv/
+ENV/

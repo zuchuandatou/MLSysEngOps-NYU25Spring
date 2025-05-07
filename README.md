@@ -40,9 +40,9 @@ link to their contributions in all repos here. -->
 Must include: all the hardware, all the containers/software platforms, all the models, 
 all the data. -->
 
-![Sys Diagram](images/sys_diagram.png)
+![Sys Diagram](zehao-li/images/sys_diagram.png)
 
-![Sys Diagram Revisited](images/sys_diagram2.png)
+![Sys Diagram Revisited](zehao-li/images/sys_diagram2.png)
 (Refined System Diagram after Lightning Presentation)
 ### Summary of outside materials
 
