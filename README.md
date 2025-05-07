@@ -81,8 +81,12 @@ diagram, (3) justification for your strategy, (4) relate back to lecture materia
 
 <!-- Make sure to clarify how you will satisfy the Unit 4 and Unit 5 requirements, 
 and which optional "difficulty" points you are attempting. -->
+We trained and re-trained a Transformer-based model (SSE-PT) for session-based recommendations using both the MovieLens-1M and Wiki1000 datasets, demonstrating modeling choices grounded in recent research.
+We plan to scale training using Ray Train and compare distributed vs. single-GPU training to explore strategies for large models.
+We will host an experiment tracking server (e.g., MLflow) on Chameleon Cloud and log all experiments.
+Additionally, we will deploy a Ray cluster on Chameleon and schedule our training jobs there, with the goal of integrating Ray Tune for hyperparameter tuning to gain extra difficulty points.
 
-##### Model Serving: 
+#### Model Serving: 
 A RESTful API endpoint will be implemented using FastAPI. The service will be containerized and deployed on Kubernetes with support for asynchronous and batched inference. 
 
 ##### Performance Requirements:
