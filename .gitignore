@@ -5,3 +5,4 @@
 *.pyz
 *.pywz
 *.pyzw
+__pycache__/
