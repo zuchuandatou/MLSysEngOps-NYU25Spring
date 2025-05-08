@@ -6,11 +6,13 @@ POST: curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/j
         -d '{"user_id": 42, "sequence": [10,11,23,99], "top_k": 5}'
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import os
+import traceback
 from typing import Optional
 
 # ----------  Model definition (verbatim from the notebook) ---------- #
@@ -278,27 +280,73 @@ def build_model_from_ckpt(ckpt_path: str, device: torch.device) -> SSEPT:
     return model
 
 
-# ----------  Flask App  ---------- #
+# ----------  Flask App  ---------- #
 app = Flask(__name__)
+
+# Configure CORS for all origins (for testing)
+CORS(app, resources={
+    r"/*": {
+        "origins": "*",  # Allow all origins for testing
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    return response
+
 DEVICE = torch.device("cpu")
 # Change this to your checkpoint path or set env var MODEL_PATH
 MODEL_PATH = os.getenv(
-    "MODEL_PATH", "D:\\develop\\MLSysEngOps-NYU25Spring\\app\\model\\SSE_PT10kemb.pth"
+    "MODEL_PATH", "/home/zack/05/MLSysEngOps-NYU25Spring/app/SSE_PT10kemb.pth"
 )
 
 try:
     model = build_model_from_ckpt(MODEL_PATH, DEVICE)
     SEQ_LEN = model.seq_max_len
+    print(f"Model loaded successfully from {MODEL_PATH}")
 except FileNotFoundError:
+    print(f"Warning: Checkpoint file '{MODEL_PATH}' not found.")
     raise RuntimeError(
         f"Checkpoint '{MODEL_PATH}' not found. "
         "Set MODEL_PATH env var or place the .pth file next to app.py."
     )
 except ValueError as e:
+    print(f"Error loading checkpoint: {e}")
     raise RuntimeError(f"Failed to load checkpoint: {e}")
+except Exception as e:
+    print(f"Unexpected error loading model: {e}")
+    traceback.print_exc()
+    raise RuntimeError(f"Failed to initialize model: {e}")
 
 
-@app.route("/predict", methods=["POST"])
+@app.route("/test", methods=["GET", "POST", "OPTIONS"])
+def test_endpoint():
+    """Simple endpoint to test if CORS is working properly"""
+    if request.method == "OPTIONS":
+        return make_response(), 200
+        
+    print("Test endpoint called with method:", request.method)
+    
+    # Log the full request details
+    print("Request headers:", dict(request.headers))
+    
+    if request.method == "POST":
+        try:
+            data = request.get_json(force=True)
+            print("Received POST data:", data)
+        except Exception as e:
+            print("Error parsing JSON:", str(e))
+            return jsonify(message="Error parsing JSON", error=str(e)), 400
+            
+    return jsonify(message="CORS is working! Your API is accessible from the frontend."), 200
+
+
+@app.route("/predict", methods=["POST", "OPTIONS"])
 def predict():
     """
     JSON body:
@@ -308,33 +356,75 @@ def predict():
     Returns:
       { "top_items": [id1, id2, …] }
     """
-    data = request.get_json(force=True)
+    # Handle preflight OPTIONS request
+    if request.method == "OPTIONS":
+        print("Received OPTIONS request for /predict")
+        return make_response(), 200
+    
+    print("Received POST request for /predict")
+    print("Content-Type:", request.headers.get('Content-Type'))
+    
+    try:
+        # Try to get the raw data first
+        raw_data = request.data
+        print("Raw request data:", raw_data)
+        
+        # Parse request data
+        data = request.get_json(force=True)
+        print(f"Parsed request data: {data}")
 
-    # -------  basic validation  ------- #
-    if data is None or "user_id" not in data or "sequence" not in data:
-        return jsonify(error="Request must contain 'user_id' and 'sequence'"), 400
+        # -------  basic validation  ------- #
+        if data is None or "user_id" not in data or "sequence" not in data:
+            error_msg = "Request must contain 'user_id' and 'sequence'"
+            print(f"Validation error: {error_msg}")
+            return jsonify(error=error_msg), 400
 
-    user_id = data["user_id"]
-    seq = data["sequence"]
-    top_k = int(data.get("top_k", 1))
-    if not isinstance(seq, list) or not all(isinstance(x, int) for x in seq):
-        return jsonify(error="'sequence' must be list[int]"), 400
+        user_id = data["user_id"]
+        seq = data["sequence"]
+        top_k = int(data.get("top_k", 1))
+        
+        if not isinstance(seq, list) or not all(isinstance(x, int) for x in seq):
+            error_msg = "'sequence' must be list[int]"
+            print(f"Validation error: {error_msg}")
+            return jsonify(error=error_msg), 400
 
-    # -------  Tensor preparation  ------- #
-    seq_padded = pad_or_truncate(seq, SEQ_LEN)
-    user_tensor = torch.tensor([user_id], dtype=torch.long, device=DEVICE)
-    seq_tensor = torch.tensor([seq_padded], dtype=torch.long, device=DEVICE)
+        # Print processing information
+        print(f"Processing request: user_id={user_id}, sequence={seq}, top_k={top_k}")
 
-    # -------  Model inference  ------- #
-    with torch.no_grad():
-        logits = model(user_tensor, seq_tensor)  # [1, item_num]
-        _, top_indices = torch.topk(logits, k=top_k, dim=1)
-        top_items = top_indices.squeeze(0).cpu().tolist()
+        # -------  Tensor preparation  ------- #
+        try:
+            seq_padded = pad_or_truncate(seq, SEQ_LEN)
+            user_tensor = torch.tensor([user_id], dtype=torch.long, device=DEVICE)
+            seq_tensor = torch.tensor([seq_padded], dtype=torch.long, device=DEVICE)
+        except Exception as e:
+            print(f"Error preparing tensors: {e}")
+            traceback.print_exc()
+            return jsonify(error=f"Error preparing input tensors: {str(e)}"), 500
 
-    return jsonify(top_items=top_items)
+        # -------  Model inference  ------- #
+        try:
+            with torch.no_grad():
+                logits = model(user_tensor, seq_tensor)  # [1, item_num]
+                _, top_indices = torch.topk(logits, k=top_k, dim=1)
+                top_items = top_indices.squeeze(0).cpu().tolist()
+            
+            print(f"Returning top items: {top_items}")
+            return jsonify(top_items=top_items)
+        except Exception as e:
+            print(f"Error during model inference: {e}")
+            traceback.print_exc()
+            return jsonify(error=f"Model inference error: {str(e)}"), 500
+            
+    except Exception as e:
+        print(f"Unexpected error in predict endpoint: {e}")
+        traceback.print_exc()
+        return jsonify(error=f"Server error: {str(e)}"), 500
 
 
 if __name__ == "__main__":
-    # Use host='0.0.0.0' for Docker or remote; debug=False for production
-    # Use a different port to avoid conflicts
-    app.run(debug=True, port=5050)
+    # Use host='0.0.0.0' to allow external connections
+    print("Starting Flask API server...")
+    print("* CORS enabled for all origins (testing mode)")
+    print("* Test endpoint: http://127.0.0.1:5000/test")
+    print("* Predict endpoint: http://127.0.0.1:5000/predict (POST)")
+    app.run(debug=True, host="0.0.0.0", port=5000)
