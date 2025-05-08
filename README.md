@@ -27,10 +27,7 @@ uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 ## Running in dockerfile
-```
-docker-compose up
-```
-or
+
 ```
 docker build -t project37-app:local .
 docker run --rm -p 8000:8000 -p 3000:3000 project37-app:local
