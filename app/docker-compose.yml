@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  backend:
+    image: python:3.11-slim-buster
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    command: >
+      bash -c "
+        pip install -r requirements.txt   --extra-index-url https://download.pytorch.org/whl/cpu &&
+        python app.py
+      "
+    restart: unless-stopped
+  
+  frontend:
+    image: node:16-alpine
+    working_dir: /app/frontend
+    volumes:
+      - ./frontend:/app/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    command: sh -c "npm install && npm start"
+    restart: unless-stopped 

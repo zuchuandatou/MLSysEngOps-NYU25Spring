@@ -3,14 +3,14 @@
 Discuss: Value proposition: Your will propose a machine learning system that can be 
 used in an existing business or service. (You should not propose a system in which 
 a new business or service would be developed around the machine learning system.) 
-Describe the value proposition for the machine learning system. What’s the (non-ML) 
+Describe the value proposition for the machine learning system. What's the (non-ML) 
 status quo used in the business or service? What business metric are you going to be 
-judged on? (Note that the “service” does not have to be for general users; you can 
+judged on? (Note that the "service" does not have to be for general users; you can 
 propose a system for a science problem, for example.)
 -->
 
 
-Current recommendation systems, including Netflix’s, often rely heavily on behavioral data and content metadata, using static models that lack adaptability to rapidly changing user preferences. These systems may overlook richer data modalities like audio and video content, limiting their ability to personalize in cold-start or nuanced scenarios.  
+Current recommendation systems, including Netflix's, often rely heavily on behavioral data and content metadata, using static models that lack adaptability to rapidly changing user preferences. These systems may overlook richer data modalities like audio and video content, limiting their ability to personalize in cold-start or nuanced scenarios.  
 
 Our project introduces an automated MLOps pipeline for personalized movie recommendations using the Enhanced MovieLens dataset which includes text, metadata, audio, and trailer transcriptions, and a Transformer-based model (SSE-PT). We streamline training, tuning, deployment, and monitoring using Ray, MLflow, FastAPI, and Kubernetes with GitOps support via ArgoCD and Helm.
 
@@ -166,6 +166,9 @@ to pull code at jupyter interface:
 ```
 git clone --recurse-submodules https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git /work/MLSysEngOps-NYU25Spring
 ```
+
+
+
 <!-- Make sure to clarify how you will satisfy the Unit 3 requirements,  and which 
 optional "difficulty" points you are attempting. -->
 
@@ -180,4 +183,80 @@ To meet the Unit 3 DevOps requirements, our project will follow a cloud-native, 
 - **Model Training Pipeline**: Built using Argo Workflows, triggered by commits to the training code or data updates.
 - **CI/CD Pipeline**: Implemented using GitHub Actions and ArgoCD. Handles linting, testing, model training, containerization, and deployment.
 - **Environments**: We define distinct namespaces for `staging`, `canary`, and `production`, with promotion mechanisms.
+
+### Frontend Application Setup
+
+To install and run the frontend application:
+
+1. **Clone the repository and navigate to the frontend directory**
+   ```bash
+   git clone https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
+   cd MLSysEngOps-NYU25Spring/app/frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm start
+   ```
+   The application will be available at http://localhost:3000
+
+4. **For production deployment**
+   ```bash
+   npm run build
+   ```
+   This creates optimized files in the `build` directory that can be served by any static file server.
+
+5. Add TMDB api key to app.js or env
+
+#### Requirements
+- Node.js (v14 or higher)
+- npm (comes with Node.js)
+
+### Backend API Setup
+
+1. **Navigate to the app directory**
+   ```bash
+   cd MLSysEngOps-NYU25Spring/app
+   ```
+
+2. **Install Python dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+
+3. **Start the Flask server**
+   ```bash
+   python app.py
+   ```
+   The API will be available at http://127.0.0.1:5000
+
+4. **Test the API with curl**
+   ```bash
+   curl -X POST http://127.0.0.1:8000/predict \
+     -H "Content-Type: application/json" \
+     -d '{"user_id": 1, "sequence": [3, 8, 15], "top_k": 3}'
+   ```
+
+#### API Endpoints
+- `POST /predict` - Get movie recommendations for a user
+  - Request body: `{"user_id": int, "sequence": [int, int, ...], "top_k": int}`
+  - Response: `{"top_items": [id1, id2, ...]}`
+
+### Docker Setup
+```
+cd app/
+docker-compose up
+```
+
+#### Requirements
+- Python 3.8+
+- PyTorch
+- Flask
+- Flask-CORS
 

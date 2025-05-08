@@ -19,7 +19,7 @@ function App() {
   const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
   
   // API endpoint
-  const API_ENDPOINT = 'http://127.0.0.1:5000/predict';
+  const API_ENDPOINT = 'http://127.0.0.1:8000/predict';
 
   useEffect(() => {
     if (selectedUser) {

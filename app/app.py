@@ -301,9 +301,7 @@ def after_request(response):
 
 DEVICE = torch.device("cpu")
 # Change this to your checkpoint path or set env var MODEL_PATH
-MODEL_PATH = os.getenv(
-    "MODEL_PATH", "/home/zack/05/MLSysEngOps-NYU25Spring/app/SSE_PT10kemb.pth"
-)
+MODEL_PATH = "SSE_PT10kemb.pth"
 
 try:
     model = build_model_from_ckpt(MODEL_PATH, DEVICE)
@@ -426,5 +424,5 @@ if __name__ == "__main__":
     print("Starting Flask API server...")
     print("* CORS enabled for all origins (testing mode)")
     print("* Test endpoint: http://127.0.0.1:5000/test")
-    print("* Predict endpoint: http://127.0.0.1:5000/predict (POST)")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    print("* Predict endpoint: http://127.0.0.1:8000/predict (POST)")
+    app.run(debug=True, host="0.0.0.0", port=8000)
