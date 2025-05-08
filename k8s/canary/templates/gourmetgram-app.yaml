@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gourmetgram-app
+  name: project37-app
   namespace: gourmetgram-canary
 
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: gourmetgram-app
+      app: project37-app
   template:
     metadata:
       labels:
-        app: gourmetgram-app
+        app: project37-app
     spec:
       containers:
-        - name: gourmetgram-app
+        - name: project37-app
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 8000
@@ -27,11 +27,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gourmetgram-app
+  name: project37-app
   namespace: gourmetgram-canary
 spec:
   selector:
-    app: gourmetgram-app
+    app: project37-app
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 8000

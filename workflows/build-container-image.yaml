@@ -117,7 +117,7 @@ spec:
       args:
         - --dockerfile=/mnt/workspace/Dockerfile
         - --context=/mnt/workspace
-        - --destination=registry.kube-system.svc.cluster.local:5000/gourmetgram-app:staging-1.0.{{inputs.parameters.model-version}}
+        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:staging-1.0.{{inputs.parameters.model-version}}
         - --insecure
       volumeMounts:
       - name: workdir

@@ -7,6 +7,7 @@
     repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
     app_path: k8s/staging
     argocd_namespace: argocd
+    dest_namespace: project37-staging
 
   tasks:
 
@@ -50,7 +51,7 @@
         --repo {{ repo_url }} \
         --path {{ app_path }} \
         --dest-server https://kubernetes.default.svc \
-        --dest-namespace "" \
+        --dest-namespace {{ dest_namespace }} \         # override the default namespace
         --helm-set-string service.externalIP={{ external_ip }} \
         --sync-policy automated --self-heal \
         --port-forward --port-forward-namespace={{ argocd_namespace }}
