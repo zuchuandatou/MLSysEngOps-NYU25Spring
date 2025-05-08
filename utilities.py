@@ -1,8 +1,3 @@
-"""
-Utilities for the SSEPT sequential-recommendation model
---------------------------------------------------------------
-Contains model definition and helper functions
-"""
 
 import torch
 import torch.nn as nn

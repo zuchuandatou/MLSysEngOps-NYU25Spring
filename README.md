@@ -26,7 +26,16 @@ To start the server:
 uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-If you encounter a "No module named 'fastapi'" error, ensure you're using the Python environment where you installed the dependencies.
+## Running in dockerfile
+```
+docker-compose up
+```
+or
+```
+docker build -t project37-app:local .
+docker run --rm -p 8000:8000 -p 3000:3000 project37-app:local
+```
+
 
 ## API Endpoints
 
