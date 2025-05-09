@@ -17,19 +17,83 @@ services:
       - -c
       - |
         set -e
-        
+
         echo "Resetting dataset directory..."
         rm -rf /data/Project-37
         mkdir -p /data/Project-37
-        cd /data/Project-37
-        
-        echo "Downloading MovieLens 1B tar..."
+
+        echo "Downloading MovieLens synthetic tar..."
         curl -L https://files.grouplens.org/datasets/movielens/ml-20mx16x32.tar \
-          -o ml-1b.tar
+          -o /data/Project-37/ml-1b.tar
+
+        echo "Extracting tar into Project-37..."
+        tar -xf /data/Project-37/ml-1b.tar -C /data/Project-37
+        rm -f /data/Project-37/ml-1b.tar
+
+        echo "Extraction complete. Preview of contents:"
+        find /data/Project-37 | head -20
+
+        echo "Confirmed structure:"
+        ls -l /data/Project-37/ml-20mx16x32
+
+  # To run it: docker compose -f docker-compose-etl.yaml run transform-data
+  transform-data:
+    container_name: etl_transform_data
+    image: python:3.11
+    volumes:
+      - project37:/data
+    working_dir: /data/Project-37
+    command:
+      - bash
+      - -c
+      - |
+        set -e
         
-        echo "Extracting tar file..."
-        tar -xf ml-1b.tar
-        rm -f ml-1b.tar
+        echo "Installing required Python packages..."
+        pip install --no-cache-dir numpy pandas scikit-learn
         
-        echo "Listing contents of /data after extract stage:"
-        ls -l /data
+        python3 -c '
+        import os
+        import numpy as np
+        import pandas as pd
+        from sklearn.model_selection import train_test_split
+      
+        output_dir = "/data/Project-37/data"
+        os.makedirs(output_dir, exist_ok=True)
+        data_name = "movielens_synthetic"
+        full_txt_path = os.path.join(output_dir, f"{data_name}.txt")
+        subdirs = ["training", "validation", "evaluation"]
+      
+        print("Streaming synthetic .npz shards to disk...")
+        user_counter = 1
+      
+        with open(full_txt_path, "w") as f:
+          for i in range(16):
+            file_path = f"/data/Project-37/ml-20mx16x32/trainx16x32_{i}.npz"
+            print(f"Loading {file_path}")
+            shard = np.load(file_path, allow_pickle=True)
+            sequences = shard["arr_0"]
+            for item_ids in sequences:
+              for item_id in item_ids:
+                f.write(f"{user_counter}\\t{int(item_id)}\\n")
+              user_counter += 1
+      
+        print(f"Saved full dataset to: { full_txt_path }")
+      
+        df = pd.read_csv(full_txt_path, sep="\\t", names=["user_id", "item_id"])
+      
+        train, temp = train_test_split(df, test_size=0.3, random_state=42)
+        val, eval_ = train_test_split(temp, test_size=0.5, random_state=42)
+      
+        for subdir in subdirs:
+          os.makedirs(f"/data/Project-37/{subdir}", exist_ok=True)
+      
+        train.to_csv(f"/data/Project-37/training/{data_name}_train.txt", sep="\\t", header=False, index=False)
+        val.to_csv(f"/data/Project-37/validation/{data_name}_val.txt", sep="\\t", header=False, index=False)
+        eval_.to_csv(f"/data/Project-37/evaluation/{data_name}_eval.txt", sep="\\t", header=False, index=False)
+      
+        print("Data split into training, validation, and evaluation sets.")
+        '
+        
+        echo "Final structure:"
+        find /data/Project-37 | head -30
