@@ -21,20 +21,18 @@ services:
         echo "Resetting dataset directory..."
         rm -rf /data/Project-37
         mkdir -p /data/Project-37
+        cd /data/Project-37
 
-        echo "Downloading MovieLens synthetic tar..."
-        curl -L https://files.grouplens.org/datasets/movielens/ml-20mx16x32.tar \
-          -o /data/Project-37/ml-1b.tar
+        echo "Downloading MovieLens 32M zip..."
+        curl -L https://files.grouplens.org/datasets/movielens/ml-32m.zip -o ml-32m.zip
 
-        echo "Extracting tar into Project-37..."
-        tar -xf /data/Project-37/ml-1b.tar -C /data/Project-37
-        rm -f /data/Project-37/ml-1b.tar
+        echo "Unzipping dataset..."
+        unzip -q ml-32m.zip
+        rm -f ml-32m.zip
 
-        echo "Extraction complete. Preview of contents:"
-        find /data/Project-37 | head -20
-
-        echo "Confirmed structure:"
-        ls -l /data/Project-37/ml-20mx16x32
+        echo "Listing contents of /data after extract stage:"
+        find /data/Project-37 | head -30
+        
 
   # To run it: docker compose -f docker-compose-etl.yaml run transform-data
   transform-data:
@@ -48,55 +46,65 @@ services:
       - -c
       - |
         set -e
-        
+
         echo "Installing required Python packages..."
-        pip install --no-cache-dir numpy pandas scikit-learn
-        
+        pip install --no-cache-dir pandas scikit-learn
+
+        echo "Transforming MovieLens 32M dataset..."
         python3 -c '
         import os
-        import numpy as np
         import pandas as pd
         from sklearn.model_selection import train_test_split
-      
-        output_dir = "/data/Project-37/data"
+
+        base_dir = "/data/Project-37"
+        data_name = "movielens_32m"
+        output_dir = os.path.join(base_dir, "staging")
         os.makedirs(output_dir, exist_ok=True)
-        data_name = "movielens_synthetic"
-        full_txt_path = os.path.join(output_dir, f"{data_name}.txt")
-        subdirs = ["training", "validation", "evaluation"]
-      
-        print("Streaming synthetic .npz shards to disk...")
-        user_counter = 1
-      
-        with open(full_txt_path, "w") as f:
-          for i in range(16):
-            file_path = f"/data/Project-37/ml-20mx16x32/trainx16x32_{i}.npz"
-            print(f"Loading {file_path}")
-            shard = np.load(file_path, allow_pickle=True)
-            sequences = shard["arr_0"]
-            for item_ids in sequences:
-              for item_id in item_ids:
-                f.write(f"{user_counter}\\t{int(item_id)}\\n")
-              user_counter += 1
-      
-        print(f"Saved full dataset to: { full_txt_path }")
-      
-        df = pd.read_csv(full_txt_path, sep="\\t", names=["user_id", "item_id"])
-      
+
+        csv_path = os.path.join(base_dir, "ml-32m", "ratings.csv")
+        print("Loading ratings.csv...")
+        names = ["user_id", "item_id", "rating", "timestamp"]
+        data = pd.read_csv(csv_path, names=names, header=0)
+
+        print("Remapping user and item IDs...")
+        user_set = data["user_id"].unique()
+        item_set = data["item_id"].unique()
+        user_map = {user: i + 1 for i, user in enumerate(user_set)}
+        item_map = {item: i + 1 for i, item in enumerate(item_set)}
+        data["user_id"] = data["user_id"].map(user_map)
+        data["item_id"] = data["item_id"].map(item_map)
+
+        print("Sorting by user_id and timestamp...")
+        data = data.sort_values(by=["user_id", "timestamp"])
+
+        num_users = data["user_id"].nunique()
+        num_items = data["item_id"].nunique()
+        sparsity = 1 - len(data) / (num_users * num_items)
+        print(f"number of users: {num_users}, number of items: {num_items}")
+        print(f"matrix sparsity: {sparsity:f}")
+        print(data.head(5))
+
+        df = data.drop(columns=["timestamp", "rating"])
+
+        print("Splitting into train/val/eval sets...")
         train, temp = train_test_split(df, test_size=0.3, random_state=42)
         val, eval_ = train_test_split(temp, test_size=0.5, random_state=42)
-      
-        for subdir in subdirs:
-          os.makedirs(f"/data/Project-37/{subdir}", exist_ok=True)
-      
-        train.to_csv(f"/data/Project-37/training/{data_name}_train.txt", sep="\\t", header=False, index=False)
-        val.to_csv(f"/data/Project-37/validation/{data_name}_val.txt", sep="\\t", header=False, index=False)
-        eval_.to_csv(f"/data/Project-37/evaluation/{data_name}_eval.txt", sep="\\t", header=False, index=False)
-      
-        print("Data split into training, validation, and evaluation sets.")
+
+        for part in ["training", "validation", "evaluation"]:
+            os.makedirs(os.path.join(base_dir, part), exist_ok=True)
+
+        df.to_csv(os.path.join(output_dir, f"{data_name}.txt"), sep="\t", header=False, index=False)
+        train.to_csv(os.path.join(base_dir, "training", f"{data_name}_train.txt"), sep="\t", header=False, index=False)
+        val.to_csv(os.path.join(base_dir, "validation", f"{data_name}_val.txt"), sep="\t", header=False, index=False)
+        eval_.to_csv(os.path.join(base_dir, "evaluation", f"{data_name}_eval.txt"), sep="\t", header=False, index=False)
+
+        print("Transform complete.")
         '
-        
-        echo "Final structure:"
-        find /data/Project-37 | head -30
+
+        echo "Listing contents after transform:"
+        find /data/Project-37 -mindepth 1 -maxdepth 1 -type d
+
+  # To run it: docker compose -f docker-compose-etl.yaml run load-data
   load-data:
     container_name: etl_load_data
     image: rclone/rclone:latest
