@@ -1,0 +1,5 @@
+apiVersion: v2
+name: project37-staging
+version: 1.0.0
+description: Project37 Staging Deployment
+
