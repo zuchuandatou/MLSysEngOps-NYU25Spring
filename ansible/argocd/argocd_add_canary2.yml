@@ -51,6 +51,7 @@
         argocd app create {{ app_name }} \
         --repo {{ repo_url }} \
         --path {{ app_path }} \
+        --revision {{ target_rev }} \ 
         --dest-server https://kubernetes.default.svc \
         --dest-namespace {{ dest_namespace }} \
         --helm-set-string service.externalIP={{ external_ip }} \
@@ -61,6 +62,7 @@
       when: app_check.rc == 0
       command: >
         argocd app set {{ app_name }} \
+        --revision {{ target_rev }} \ 
         --helm-set-string service.externalIP={{ external_ip }} \
         --port-forward --port-forward-namespace={{ argocd_namespace }}
 
