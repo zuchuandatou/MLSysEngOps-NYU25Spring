@@ -32,8 +32,8 @@
       set_fact:
         external_ip: "{{ ansible_all_ipv4_addresses | select('match', '^10\\.56\\..*') | list | first }}"
 
-    - name: Create gourmetgram-production namespace if missing
-      command: kubectl create namespace gourmetgram-production
+    - name: Create project37-production namespace if missing
+      command: kubectl create namespace project37-production
       register: ns_create
       failed_when: ns_create.rc != 0 and "AlreadyExists" not in ns_create.stderr
       changed_when: "'created' in ns_create.stdout"
