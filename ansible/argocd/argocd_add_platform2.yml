@@ -13,7 +13,7 @@
 
     # ── argocd / helm ─────────────────────────────────────────────────────────
     argocd_username: "admin"
-    repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
+    repo_path: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
 
     app_name: "project37-platform"
     app_path: "k8s/platform"
@@ -76,7 +76,7 @@
   become: yes
   vars:
     argocd_username: "admin"
-    repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
+    repo_path: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
     target_rev: "zehao-li-cicd"
     app_name: "project37-platform"
     app_path: "k8s/platform"
