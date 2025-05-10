@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: project37-app
+  namespace: project37-canary
 
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -27,6 +28,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: project37-app
+  namespace: project37-canary
 spec:
   selector:
     app: project37-app
@@ -35,4 +37,3 @@ spec:
       targetPort: 3000
   externalIPs:
     - {{ .Values.service.externalIP }}
-
