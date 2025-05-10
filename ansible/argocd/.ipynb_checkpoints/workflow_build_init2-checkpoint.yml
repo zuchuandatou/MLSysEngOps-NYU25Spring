@@ -4,7 +4,7 @@
   vars:
     repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
     repo_dest: /tmp/mlsysengops
-    workflow_file: workflows/build-initial2.yaml   
+    workflow_file: workflows/build-initial2.yaml
     workflow_name: build-initial2
     argo_namespace: argo
 

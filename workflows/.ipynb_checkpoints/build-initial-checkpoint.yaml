@@ -32,7 +32,7 @@ spec:
 
           while [ $i -le $MAX_RETRIES ]; do
             echo "Attempt $i of $MAX_RETRIES: Cloning repo..."
-            git clone --branch app https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git /mnt/workspace && break
+            git clone --branch app-staging https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git /mnt/workspace && break
             echo "Git clone failed. Retrying in 5 seconds..."
             i=$((i + 1))
             sleep 5
@@ -52,7 +52,7 @@ spec:
       args:
         - --dockerfile=/mnt/workspace/Dockerfile
         - --context=/mnt/workspace
-        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:staging-1.0.0
+        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:staging-1.0.2
         - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:canary-1.0.0
         - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:production-1.0.0
         - --insecure
