@@ -77,6 +77,7 @@
   vars:
     argocd_username: "admin"
     repo_path: "https://github.com/zuchuandatou/mlops-iac.git"
+    target_rev: zehao-li/cicd
     app_name: "project37-platform"
     app_path: "k8s/platform"
     minio_access_key: "your-access-key"
@@ -163,7 +164,7 @@
         argocd app create {{ app_name }} \
         --repo {{ repo_path }} \
         --path {{ app_path }} \
-        --revision {{ target_rev }} \ 
+        --revision {{ target_rev }} \
         --dest-server https://kubernetes.default.svc \
         --dest-namespace "project37-platform" \
         --helm-set-string minio.externalIP={{ external_ip }} \
