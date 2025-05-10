@@ -30,6 +30,9 @@ spec:
           MAX_RETRIES=5
           i=1
 
+          echo "Cleaning existing workspace if any..."
+          rm -rf /mnt/workspace/*
+
           while [ $i -le $MAX_RETRIES ]; do
             echo "Attempt $i of $MAX_RETRIES: Cloning repo..."
             git clone --branch app-staging https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git /mnt/workspace && break
