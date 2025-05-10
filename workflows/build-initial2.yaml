@@ -52,6 +52,11 @@ spec:
   - name: kaniko
     container:
       image: gcr.io/kaniko-project/executor:latest
+      env:
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker/
+        - name: GODEBUG
+          value: "netdns=go"
       args:
         - --dockerfile=/mnt/workspace/Dockerfile
         - --context=/mnt/workspace
