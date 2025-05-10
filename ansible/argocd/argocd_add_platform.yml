@@ -14,7 +14,6 @@
     # ── argocd / helm ─────────────────────────────────────────────────────────
     argocd_username: "admin"
     repo_path: "https://github.com/zuchuandatou/mlops-iac.git"
-    target_rev: zehao-li/cicd
     app_name: "project37-platform"
     app_path: "k8s/platform"
     minio_access_key: "your-access-key"
@@ -77,7 +76,7 @@
   vars:
     argocd_username: "admin"
     repo_path: "https://github.com/zuchuandatou/mlops-iac.git"
-    target_rev: zehao-li/cicd
+    target_rev: "zehao-li/cicd"
     app_name: "project37-platform"
     app_path: "k8s/platform"
     minio_access_key: "your-access-key"
