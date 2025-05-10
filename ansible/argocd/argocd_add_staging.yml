@@ -72,6 +72,7 @@
         argocd app set {{ app_name }} \
         --revision {{ target_rev }} \  
         --helm-set-string service.externalIP={{ external_ip }} \
+        --helm-set-string service.type=NodePort \
         --port-forward --port-forward-namespace={{ argocd_namespace }}
 
     # ------------------------------------------------------------------
