@@ -24,7 +24,7 @@ services:
         cd /data/Project-37
 
         echo "Downloading MovieLens 192M zip..."
-        curl -L "https://nyu.box.com/shared/static/i0oigvvidqvohjkrbix3v3cyw734bkqy?dl=1" -o ml-192m.zip
+        curl -L "https://nyu.box.com/shared/static/5r8m3rvjfejcip7nqurf9jbpi5rw5ri1?dl=1" -o ml-192m.zip
 
         echo "Unzipping dataset..."
         unzip -q ml-192m.zip
@@ -46,72 +46,63 @@ services:
       - -c
       - |
         set -e
-        
+
         echo "Installing required Python packages..."
         pip install --no-cache-dir pandas scikit-learn
-        
+
         echo "Transforming MovieLens 192M dataset..."
         python3 -c '
         import os
         import pandas as pd
-        from sklearn.model_selection import train_test_split
-        
+        import random
+      
         base_dir = "/data/Project-37"
         csv_path = os.path.join(base_dir, "ml-192m", "ratings.csv")
         data_name = "movielens_192m"
-        output_dir = os.path.join(base_dir, "staging")
+        output_dir = os.path.join(base_dir, "raw")
         os.makedirs(output_dir, exist_ok=True)
-        remapped_path = os.path.join(output_dir, f"{data_name}_remapped.csv")
-        
-        print("Pass 1: Gathering user/item sets from chunks...")
-        chunks = pd.read_csv(csv_path, chunksize=1_000_000)
+      
+        train_path = os.path.join(base_dir, "training", f"{data_name}_train.txt")
+        val_path = os.path.join(base_dir, "validation", f"{data_name}_val.txt")
+        eval_path = os.path.join(base_dir, "evaluation", f"{data_name}_eval.txt")
+      
+        for p in [train_path, val_path, eval_path]:
+          os.makedirs(os.path.dirname(p), exist_ok=True)
+      
+        # Pass 1: Build ID maps
+        print("Pass 1: Building user/item ID maps...")
         user_set = set()
         item_set = set()
-        for chunk in chunks:
-            user_set.update(chunk["userId"].unique())
-            item_set.update(chunk["movieId"].unique())
-        
+        for chunk in pd.read_csv(csv_path, chunksize=1_000_000):
+          user_set.update(chunk["userId"].unique())
+          item_set.update(chunk["movieId"].unique())
+      
         user_map = {u: i + 1 for i, u in enumerate(sorted(user_set))}
-        item_map = {v: i + 1 for i, v in enumerate(sorted(item_set))}
-        
-        print("Pass 2: Remapping and writing to disk...")
-        chunks = pd.read_csv(csv_path, chunksize=1_000_000)
-        with open(remapped_path, "w") as f:
-            f.write("user_id,item_id,timestamp,rating\n")
-            for chunk in chunks:
-                chunk["user_id"] = chunk["userId"].map(user_map)
-                chunk["item_id"] = chunk["movieId"].map(item_map)
-                chunk["timestamp"] = chunk["timestamp"]
-                chunk["rating"] = chunk["rating"]
-                chunk[["user_id", "item_id", "timestamp", "rating"]].to_csv(f, header=False, index=False)
-        
-        print("Loading remapped data for sort and split...")
-        df = pd.read_csv(remapped_path)
-        df = df.sort_values(by=["user_id", "timestamp"])
-        
-        num_users = df["user_id"].nunique()
-        num_items = df["item_id"].nunique()
-        sparsity = 1 - len(df) / (num_users * num_items)
-        print(f"number of users: {num_users}, number of items: {num_items}")
-        print(f"matrix sparsity: {sparsity:f}")
-        print(df[["user_id", "item_id", "rating", "timestamp"]].head(5))
-        
-        df = df.drop(columns=["timestamp", "rating"])
-        
-        print("Splitting into train/val/eval sets...")
-        train, temp = train_test_split(df, test_size=0.3, random_state=42)
-        val, eval_ = train_test_split(temp, test_size=0.5, random_state=42)
-        
-        for part in ["training", "validation", "evaluation"]:
-            os.makedirs(os.path.join(base_dir, part), exist_ok=True)
-        
-        df.to_csv(os.path.join(output_dir, f"{data_name}.txt"), sep="\\t", header=False, index=False)
-        train.to_csv(os.path.join(base_dir, "training", f"{data_name}_train.txt"), sep="\\t", header=False, index=False)
-        val.to_csv(os.path.join(base_dir, "validation", f"{data_name}_val.txt"), sep="\\t", header=False, index=False)
-        eval_.to_csv(os.path.join(base_dir, "evaluation", f"{data_name}_eval.txt"), sep="\\t", header=False, index=False)
-        
+        item_map = {m: i + 1 for i, m in enumerate(sorted(item_set))}
+      
+        # Pass 2: Remap + assign each row to split immediately
+        print("Pass 2: Remapping + splitting rows to output...")
+        split_probs = [0.7, 0.15, 0.15]
+      
+        with open(train_path, "w") as f_train, open(val_path, "w") as f_val, open(eval_path, "w") as f_eval:
+          for chunk in pd.read_csv(csv_path, chunksize=1_000_000):
+            chunk["user_id"] = chunk["userId"].map(user_map)
+            chunk["item_id"] = chunk["movieId"].map(item_map)
+            for _, row in chunk.iterrows():
+              line = f"{int(row.user_id)}\t{int(row.item_id)}\n"
+              r = random.random()
+              if r < split_probs[0]:
+                f_train.write(line)
+              elif r < split_probs[0] + split_probs[1]:
+                f_val.write(line)
+              else:
+                f_eval.write(line)
+      
+        print("Stats:")
+        print(f"Total users: { len(user_map) }, items: { len(item_map) }")
         print("Transform complete.")
         '
+                                                         
         echo "Listing contents after transform:"
         find /data/Project-37 -mindepth 1 -maxdepth 1 -type d
 
