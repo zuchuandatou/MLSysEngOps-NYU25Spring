@@ -1,12 +1,14 @@
 ---
-- name: Deploy Gourmetgram Canary via ArgoCD & Helm
+- name: Deploy Project37 Canary via ArgoCD & Helm
   hosts: node1
   become: yes
   vars:
-    app_name: gourmetgram-canary
-    repo_url: https://github.com/teaching-on-testbeds/gourmetgram-iac.git
+    app_name: project37-canary
+    repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
+    target_rev: zehao-li/cicd
     app_path: k8s/canary
     argocd_namespace: argocd
+    dest_namespace: project37-canary
 
   tasks:
 

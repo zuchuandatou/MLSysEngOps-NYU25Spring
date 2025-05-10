@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: project37-app
-  namespace: gourmetgram-production
+  namespace: project37-production
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -18,7 +18,7 @@ spec:
         - name: project37-app
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
-            - containerPort: 8000
+            - containerPort: 3000
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 ---
@@ -27,13 +27,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: project37-app
-  namespace: gourmetgram-production
+  namespace: project37-production
 spec:
   selector:
     app: project37-app
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 8000
+      targetPort: 3000
   externalIPs:
     - {{ .Values.service.externalIP }}
 

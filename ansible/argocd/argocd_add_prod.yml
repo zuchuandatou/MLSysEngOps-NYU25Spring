@@ -1,13 +1,14 @@
 ---
-- name: Deploy Gourmetgram Production via ArgoCD & Helm
+- name: Deploy Project37 Production via ArgoCD & Helm
   hosts: node1
   become: yes
   vars:
-    app_name: gourmetgram-production
-    repo_url: https://github.com/teaching-on-testbeds/gourmetgram-iac.git
+    app_name: project37-production
+    repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
+    target_rev: zehao-li/cicd
     app_path: k8s/production
     argocd_namespace: argocd
-
+    dest_namespace: project37-production
   tasks:
 
     - name: Get ArgoCD admin password

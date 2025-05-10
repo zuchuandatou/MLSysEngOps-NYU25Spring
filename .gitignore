@@ -5,3 +5,5 @@
 *.pyz
 *.pywz
 *.pyzw
+*.ipynb
+*.ipynb_checkpoints

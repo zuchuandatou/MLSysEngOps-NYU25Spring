@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.kube-system.svc.cluster.local:5000/gproject37-app
+  repository: registry.kube-system.svc.cluster.local:5000/project37-app
   tag: canary-1.0.0
 
 service:
@@ -10,9 +10,9 @@ service:
 
 resources:
   limits:
+    cpu: "1000m"
+    memory: "1000Mi"
+  requests:
     cpu: "500m"
     memory: "256Mi"
-  requests:
-    cpu: "200m"
-    memory: "128Mi"
 
