@@ -20,6 +20,7 @@ spec:
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 3000
+            - containerPort: 8000
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 ---
@@ -33,7 +34,11 @@ spec:
   selector:
     app: project37-app
   ports:
-    - port: {{ .Values.service.port }}
+    - name: web
+      port: {{ .Values.service.port }}      
       targetPort: 3000
+    - name: api                             
+      port: 8002                      
+      targetPort: 8000
   externalIPs:
     - {{ .Values.service.externalIP }}
