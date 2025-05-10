@@ -5,7 +5,7 @@
   vars:
     app_name: project37-canary
     repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
-    target_rev: zehao-li/cicd
+    target_rev: "zehao-li-cicd"
     app_path: k8s/canary
     argocd_namespace: argocd
     dest_namespace: project37-canary

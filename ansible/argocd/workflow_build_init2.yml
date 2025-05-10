@@ -13,7 +13,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ repo_dest }}"
-        version: "zehao-li/cicd"
+        version: "zehao-li-cicd"
 
     - name: Submit Argo Workflow
       command: kubectl -n {{ argo_namespace }} create -f {{ repo_dest }}/{{ workflow_file }}
