@@ -163,7 +163,7 @@
         argocd app create {{ app_name }} \
         --repo {{ repo_path }} \
         --path {{ app_path }} \
-        --revision {{ target_rev }} \
+        --revision {{ target_rev }} \ 
         --dest-server https://kubernetes.default.svc \
         --dest-namespace "project37-platform" \
         --helm-set-string minio.externalIP={{ external_ip }} \
@@ -178,7 +178,7 @@
       when: app_check.rc == 0
       command: >
         argocd app set {{ app_name }} \
-        --revision {{ target_rev }} \
+        --revision {{ target_rev }} \ 
         --dest-namespace "project37-platform" \
         --helm-set-string minio.externalIP={{ external_ip }} \
         --helm-set-string mlflow.externalIP={{ external_ip }} \
