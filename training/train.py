@@ -9,11 +9,17 @@ import mlflow.pytorch
 
 
 class RatingDataset(Dataset):
-    def __init__(self, npz_path):
-        data = np.load(npz_path)
-        self.users = torch.LongTensor(data['user'])
-        self.items = torch.LongTensor(data['item'])
-        self.ratings = torch.FloatTensor(data['rating'])
+    def __init__(self, npz_dir):
+        user_list, item_list, rating_list = [], [], []
+        for npz_path in sorted(glob.glob(os.path.join(npz_dir, "*.npz"))):
+            data = np.load(npz_path)
+            user_list.append(data['user'])
+            item_list.append(data['item'])
+            rating_list.append(data['rating'])
+
+        self.users = torch.LongTensor(np.concatenate(user_list))
+        self.items = torch.LongTensor(np.concatenate(item_list))
+        self.ratings = torch.FloatTensor(np.concatenate(rating_list))
 
     def __len__(self):
         return len(self.ratings)
@@ -81,8 +87,8 @@ def train_model(model, train_loader, val_loader, epochs=5, lr=0.001, device="cpu
 
 if __name__ == "__main__":
     data_root = os.environ.get("MOVIELENS20M_DATA_DIR", "/mnt/MovieLens-20M/organized")
-    train_path = os.path.join(data_root, "training", "trainx16x32_0.npz")
-    val_path = os.path.join(data_root, "validation", "test_0.npz")
+    train_path = os.path.join(data_root, "training")
+    val_path = os.path.join(data_root, "validation")
 
     train_data = RatingDataset(train_path)
     val_data = RatingDataset(val_path)
