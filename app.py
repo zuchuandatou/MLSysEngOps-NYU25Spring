@@ -30,6 +30,9 @@ class PredictResponse(BaseModel):
 class TestResponse(BaseModel):
     message: str
 
+class VersionResponse(BaseModel):
+    model_version: str
+
 # Create FastAPI app
 app = FastAPI(title="SSEPT Recommendation API")
 
@@ -100,6 +103,18 @@ async def predict(request: PredictRequest):
         print(f"Error during prediction: {e}")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+
+from pathlib import Path
+VERSION_FILE = Path(os.getenv("VERSION_FILE", "versions.txt"))
+
+@app.get("/version", response_model=VersionResponse)
+async def get_version():
+    if not VERSION_FILE.exists():
+        # Fast to test via `curl -I /version`
+        raise HTTPException(status_code=404, detail="versions.txt not found")
+
+    model_version = VERSION_FILE.read_text().strip()
+    return VersionResponse(model_version=model_version)
 
 
 if __name__ == "__main__":
