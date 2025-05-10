@@ -3,8 +3,8 @@
   hosts: node1
   become: yes
   vars:
-    repo_url: https://github.com/teaching-on-testbeds/gourmetgram-iac.git
-    repo_dest: /tmp/gourmetgram-iac
+    repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
+    repo_dest: /tmp/MLSysEngOps-NYU25Spring
     workflow_dir: workflows
     argo_namespace: argo
     templates:
@@ -14,7 +14,7 @@
       - train-model.yaml
 
   tasks:
-    - name: Clone or update gourmetgram-iac repo
+    - name: Clone or update MLSysEngOps-NYU25Spring repo
       git:
         repo: "{{ repo_url }}"
         dest: "{{ repo_dest }}"
