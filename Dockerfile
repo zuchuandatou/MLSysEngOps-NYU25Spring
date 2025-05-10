@@ -1,10 +1,10 @@
 FROM python:3.11-slim-buster
 
-# Install Node.js
-RUN apt-get update && apt-get install -y curl gnupg && \
+# Install Node.js and deps first (Kaniko needs all deps ready before COPY if build context is clean)
+RUN apt-get update && apt-get install -y curl gnupg ca-certificates && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs && \
-    apt-get clean
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set workdir
 WORKDIR /app
@@ -13,20 +13,20 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
-# Copy everything else (app + frontend)
+# Copy the entire app (including frontend)
 COPY . .
 
-# Install frontend deps and build
+# Install frontend dependencies
 WORKDIR /app/frontend
 RUN npm install
 
 # Back to root app directory
 WORKDIR /app
 
-# Expose both ports
+# Expose ports
 EXPOSE 8000 3000
 
-# Copy launcher script
+# Copy and make script executable
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
