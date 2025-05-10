@@ -81,7 +81,7 @@ def train_model(model, train_loader, val_loader, epochs=5, lr=0.001, device="cpu
 
 if __name__ == "__main__":
     data_root = os.environ.get("MOVIELENS20M_DATA_DIR", "/mnt/MovieLens-20M/organized")
-    train_path = os.path.join(data_root, "training", "train_0.npz")
+    train_path = os.path.join(data_root, "training", "trainx16x32_0.npz")
     val_path = os.path.join(data_root, "validation", "test_0.npz")
 
     train_data = RatingDataset(train_path)
