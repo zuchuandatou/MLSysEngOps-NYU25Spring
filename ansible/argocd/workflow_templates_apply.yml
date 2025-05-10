@@ -5,6 +5,7 @@
   vars:
     repo_url: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring.git
     repo_dest: /tmp/MLSysEngOps-NYU25Spring
+    target_rev: "zehao-li-cicd"
     workflow_dir: workflows
     argo_namespace: argo
     templates:
@@ -18,7 +19,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ repo_dest }}"
-        version: main
+        version: "{{ target_rev }}"
 
     - name: Apply selected WorkflowTemplates to Argo namespace
       command: kubectl apply -n {{ argo_namespace }} -f {{ repo_dest }}/{{ workflow_dir }}/{{ item }}
