@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
-  namespace: gourmetgram-platform
+  namespace: project37-platform
 spec:
   replicas: 1
   selector:
@@ -60,7 +60,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: minio
-  namespace: gourmetgram-platform
+  namespace: project37-platform
 spec:
   selector:
     app: minio
@@ -78,7 +78,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: minio-create-bucket
-  namespace: gourmetgram-platform
+  namespace: project37-platform
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
