@@ -52,7 +52,7 @@
         --repo {{ repo_url }} \
         --path {{ app_path }} \
         --dest-server https://kubernetes.default.svc \
-        --dest-namespace "" \
+        --dest-namespace {{ dest_namespace }} \
         --helm-set-string service.externalIP={{ external_ip }} \
         --sync-policy automated --self-heal \
         --port-forward --port-forward-namespace={{ argocd_namespace }}
