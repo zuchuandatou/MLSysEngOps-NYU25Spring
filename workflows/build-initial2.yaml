@@ -56,7 +56,7 @@ spec:
         - name: DOCKER_CONFIG
           value: /kaniko/.docker/
         - name: GODEBUG
-          value: "netdns=go"
+          value: "netdns=go+1"
       args:
         - --dockerfile=/mnt/workspace/Dockerfile
         - --context=/mnt/workspace
