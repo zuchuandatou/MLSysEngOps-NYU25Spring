@@ -1,0 +1,39 @@
+services:
+  init-data:
+    image: python:3.11
+    volumes:
+      - movielens:/mnt
+      - /home/cc/dataset/Enhanced-MovieLens:/input:ro
+    working_dir: /mnt
+    command:
+      - bash
+      - -c
+      - |
+        set -e
+        echo "Creating output directory..."
+        mkdir -p /mnt/Enhanced-MovieLens && cd /mnt/Enhanced-MovieLens
+
+        echo "Copying CSVs..."
+        cp /input/*.csv .
+
+        echo "Generating text embeddings..."
+        python3 - <<EOF
+        import pandas as pd
+        import numpy as np
+        from sklearn.feature_extraction.text import TfidfVectorizer
+
+        movies = pd.read_csv("movies.csv")
+        tags = pd.read_csv("tags.csv")
+
+        tag_map = tags.groupby("movieId")["tag"].apply(lambda x: " ".join(x)).to_dict()
+        text_data = movies["title"].fillna("") + " " + movies["movieId"].map(tag_map).fillna("")
+
+        vectorizer = TfidfVectorizer(max_features=256)
+        embeddings = vectorizer.fit_transform(text_data).toarray()
+        np.save("movie_text_embeddings.npy", embeddings)
+        EOF
+    restart: "no"
+
+volumes:
+  movielens: 
+    external: true
