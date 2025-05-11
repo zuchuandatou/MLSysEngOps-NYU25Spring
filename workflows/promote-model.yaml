@@ -51,11 +51,42 @@ spec:
       command: [sh, -c]
       args:
         - |
+          set -eux
+          echo "🔁 Retagging image:"
+          echo "    source=project37-app:{{inputs.parameters.source-environment}}-1.0.{{inputs.parameters.model-version}}"
+          echo "    target=project37-app:{{inputs.parameters.target-environment}}-1.0.{{inputs.parameters.model-version}}"
           skopeo copy \
             --src-tls-verify=false \
             --dest-tls-verify=false \
             docker://registry.kube-system.svc.cluster.local:5000/project37-app:{{inputs.parameters.source-environment}}-1.0.{{inputs.parameters.model-version}} \
             docker://registry.kube-system.svc.cluster.local:5000/project37-app:{{inputs.parameters.target-environment}}-1.0.{{inputs.parameters.model-version}}
+          echo "✅ Retag completed"
+
+  - name: trigger-deploy
+    inputs:
+      parameters:
+      - name: model-version
+      - name: environment
+    container:
+      image: argoproj/argocd:v2.11.3
+      command: [sh, -c]
+      args:
+        - |
+          set -eux
+          echo "🚀 Deploying to {{inputs.parameters.environment}}:"
+          echo "    model-version={{inputs.parameters.model-version}}"
+          ARGOCD_PW=$(kubectl -n argocd get secret argocd-initial-admin-secret \
+                       -o jsonpath='{.data.password}' | base64 -d)
+          argocd login argocd-server.argocd.svc.cluster.local:443 \
+            --username admin \
+            --password "$ARGOCD_PW" \
+            --insecure --grpc-web
+          echo "⏩ Setting image.tag to {{inputs.parameters.environment}}-1.0.{{inputs.parameters.model-version}}"
+          argocd app set project37-{{inputs.parameters.environment}} \
+            --helm-set-string image.tag={{inputs.parameters.environment}}-1.0.{{inputs.parameters.model-version}}
+          echo "⏳ Syncing Argo CD app project37-{{inputs.parameters.environment}}"
+          argocd app sync project37-{{inputs.parameters.environment}}
+          echo "✅ Deploy step completed"
 
   - name: set-mlflow-alias
     inputs:
@@ -66,28 +97,29 @@ spec:
       image: python:3.11-slim
       command: [sh, -c]
       source: |
+        set -eux
+        echo "🔧 Updating MLflow alias:"
+        echo "    model-version={{inputs.parameters.model-version}}"
+        echo "    alias={{inputs.parameters.alias}}"
         pip install mlflow-skinny > /dev/null
         export MLFLOW_TRACKING_URI=http://mlflow.project37-platform.svc.cluster.local:8000
-        python -c "import mlflow; client = mlflow.tracking.MlflowClient(); client.set_registered_model_alias(name='MovieRecModel', alias='{{inputs.parameters.alias}}', version='{{inputs.parameters.model-version}}')"
-
-  - name: trigger-deploy
-    inputs:
-      parameters:
-      - name: model-version
-      - name: environment
-    resource:
-      action: create
-      manifest: |
-        apiVersion: argoproj.io/v1alpha1
-        kind: Workflow
-        metadata:
-          generateName: deploy-container-image-
-        spec:
-          workflowTemplateRef:
-            name: deploy-container-image
-          arguments:
-            parameters:
-            - name: environment
-              value: "{{inputs.parameters.environment}}"
-            - name: model-version
-              value: "{{inputs.parameters.model-version}}"
+        # retry in case the registry is momentarily unavailable
+        for i in 1 2 3 4 5; do
+          if python - <<PY
+import mlflow
+client = mlflow.tracking.MlflowClient()
+client.set_registered_model_alias(
+    name="MovieRecModel",
+    alias="{{inputs.parameters.alias}}",
+    version="{{inputs.parameters.model-version}}"
+)
+PY
+          then
+            echo "✅ Alias set successfully"
+            exit 0
+          fi
+          echo "⚠️ Alias set attempt $i failed; retrying..."
+          sleep 3
+        done
+        echo "❌ Failed to update alias after retries"
+        exit 1
