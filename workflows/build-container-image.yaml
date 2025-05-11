@@ -100,7 +100,7 @@ spec:
 
           echo "Copying model.pth to app/ as SSE_PT10kemb.pth..."
           cp "$FOUND" /mnt/workspace/SSE_PT10kemb.pth
-          echo "1.0.{{inputs.parameters.model-version}}" > /mnt/workspace/versions.txt
+          echo "1.1.{{inputs.parameters.model-version}}" > /mnt/workspace/versions.txt
       volumeMounts:
       - name: workdir
         mountPath: /mnt/workspace
