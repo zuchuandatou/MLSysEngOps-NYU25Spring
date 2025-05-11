@@ -3,7 +3,7 @@ services:
     image: python:3.11
     volumes:
       - movielens:/mnt
-      - /home/cc/dataset/Enhanced-MovieLens:/input:ro
+      - /home/cc/dataset/MovieLens:/input:ro
     working_dir: /mnt
     command:
       - bash
@@ -11,7 +11,7 @@ services:
       - |
         set -e
         echo "Creating output directory..."
-        mkdir -p /mnt/Enhanced-MovieLens && cd /mnt/Enhanced-MovieLens
+        mkdir -p /mnt/MovieLens && cd /mnt/MovieLens
 
         echo "Copying CSVs..."
         cp /input/*.csv .
