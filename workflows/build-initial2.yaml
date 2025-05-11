@@ -52,9 +52,9 @@ spec:
       args:
         - --dockerfile=/mnt/workspace/Dockerfile
         - --context=/mnt/workspace
-        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:staging-2.0.0
-        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:canary-1.0.0
-        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:production-1.0.0
+        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:staging-1.1.0
+        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:canary-1.1.0
+        - --destination=registry.kube-system.svc.cluster.local:5000/project37-app:production-1.1.0
         - --insecure
       volumeMounts:
         - name: workdir
