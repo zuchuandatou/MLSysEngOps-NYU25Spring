@@ -66,7 +66,7 @@ spec:
 
         # Trigger model training
         echo "[INFO] Triggering model training..." >&2
-        RESPONSE=$(curl -f -s -X POST http://{{inputs.parameters.endpoint-ip}}:9090/trigger-training)
+        RESPONSE=$(curl -f -s -X POST http://{{inputs.parameters.endpoint-ip}}:19090/trigger-training)
         CURL_EXIT_CODE=$?
 
         echo "[INFO] Training endpoint response was: $RESPONSE" >&2
