@@ -1,5 +1,9 @@
 FROM python:3.11-slim-buster
 
+# 1) Force APT over IPv4 so it won't hang on IPv6
+RUN echo 'Acquire::ForceIPv4 "true";' \
+     > /etc/apt/apt.conf.d/99force-ipv4
+
 # Install Node.js + dependencies
 RUN apt-get update && apt-get install -y curl gnupg ca-certificates && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
