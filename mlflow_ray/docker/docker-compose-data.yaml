@@ -1,137 +1,54 @@
-name: project37-etl
-
 volumes:
-  project37:
+  movielens20m:
+    external: true  # Uses externally created volume
 
 services:
-  # To run it: docker compose -f docker-compose-etl.yaml run extract-data
-  extract-data:
-    container_name: etl_extract_data
+  init-data:
     image: python:3.11
-    user: root
     volumes:
-      - project37:/data
+      - movielens20m:/data
     working_dir: /data
     command:
       - bash
       - -c
       - |
-        set -e
+        set -e  # Stop on error
+        echo "Creating dataset directory..."
+        mkdir -p /data/MovieLens-20M && cd /data/MovieLens-20M
 
-        echo "Resetting dataset directory..."
-        rm -rf /data/Project-37
-        mkdir -p /data/Project-37
-        cd /data/Project-37
+        echo "Downloading dataset..."
+        curl -L https://files.grouplens.org/datasets/movielens/ml-20mx16x32.tar --output ml-20mx16x32.tar
 
-        echo "Downloading MovieLens 192M zip..."
-        curl -L "https://nyu.box.com/shared/static/5r8m3rvjfejcip7nqurf9jbpi5rw5ri1?dl=1" -o ml-192m.zip
+        echo "Extracting dataset..."
+        tar -xf ml-20mx16x32.tar
+        rm ml-20mx16x32.tar
 
-        echo "Unzipping dataset..."
-        unzip -q ml-192m.zip
-        rm -f ml-192m.zip
+        echo "Organizing dataset..."
+        python3 - <<EOF
+        import os, shutil
 
-        echo "Listing contents of /data after extract stage:"
-        find /data/Project-37 -mindepth 1 -maxdepth 1 -type d
-        
+        dataset_base_dir = "/data/MovieLens-20M/ml-20mx16x32"
+        output_base_dir = "/data/MovieLens-20M/organized"
+        subdirs = ["training", "validation", "evaluation"]
 
-  # To run it: docker compose -f docker-compose-etl.yaml run transform-data
-  transform-data:
-    container_name: etl_transform_data
-    image: python:3.11
-    volumes:
-      - project37:/data
-    working_dir: /data/Project-37
-    command:
-      - bash
-      - -c
-      - |
-        set -e
+        # Create subdirectories
+        for subdir in subdirs:
+            os.makedirs(os.path.join(output_base_dir, subdir), exist_ok=True)
 
-        echo "Installing required Python packages..."
-        pip install --no-cache-dir pandas scikit-learn
+        for fname in os.listdir(dataset_base_dir):
+            if fname.endswith('.npz'):
+                if fname.startswith('train'):
+                    dest_dir = os.path.join(output_base_dir, 'training')
+                elif fname.startswith('test'):
+                    num = int(fname.split('_')[-1].split('.')[0])
+                    if num < 8:
+                        dest_dir = os.path.join(output_base_dir, 'validation')
+                    else:
+                        dest_dir = os.path.join(output_base_dir, 'evaluation')
+                else:
+                    continue
+                shutil.move(os.path.join(dataset_base_dir, fname), os.path.join(dest_dir, fname))
 
-        echo "Transforming MovieLens 192M dataset..."
-        python3 -c '
-        import os
-        import pandas as pd
-        import random
-      
-        base_dir = "/data/Project-37"
-        csv_path = os.path.join(base_dir, "ml-192m", "ratings.csv")
-        data_name = "movielens_192m"
-        output_dir = os.path.join(base_dir, "raw")
-        os.makedirs(output_dir, exist_ok=True)
-      
-        train_path = os.path.join(base_dir, "training", f"{data_name}_train.txt")
-        val_path = os.path.join(base_dir, "validation", f"{data_name}_val.txt")
-        eval_path = os.path.join(base_dir, "evaluation", f"{data_name}_eval.txt")
-      
-        for p in [train_path, val_path, eval_path]:
-          os.makedirs(os.path.dirname(p), exist_ok=True)
-      
-        # Pass 1: Build ID maps
-        print("Pass 1: Building user/item ID maps...")
-        user_set = set()
-        item_set = set()
-        for chunk in pd.read_csv(csv_path, chunksize=1_000_000):
-          user_set.update(chunk["userId"].unique())
-          item_set.update(chunk["movieId"].unique())
-      
-        user_map = {u: i + 1 for i, u in enumerate(sorted(user_set))}
-        item_map = {m: i + 1 for i, m in enumerate(sorted(item_set))}
-      
-        # Pass 2: Remap + assign each row to split immediately
-        print("Pass 2: Remapping + splitting rows to output...")
-        split_probs = [0.7, 0.15, 0.15]
-      
-        with open(train_path, "w") as f_train, open(val_path, "w") as f_val, open(eval_path, "w") as f_eval:
-          for chunk in pd.read_csv(csv_path, chunksize=1_000_000):
-            chunk["user_id"] = chunk["userId"].map(user_map)
-            chunk["item_id"] = chunk["movieId"].map(item_map)
-            for _, row in chunk.iterrows():
-              line = f"{int(row.user_id)}\t{int(row.item_id)}\n"
-              r = random.random()
-              if r < split_probs[0]:
-                f_train.write(line)
-              elif r < split_probs[0] + split_probs[1]:
-                f_val.write(line)
-              else:
-                f_eval.write(line)
-      
-        print("Stats:")
-        print(f"Total users: { len(user_map) }, items: { len(item_map) }")
-        print("Transform complete.")
-        '
-                                                         
-        echo "Listing contents after transform:"
-        find /data/Project-37 -mindepth 1 -maxdepth 1 -type d
-
-  # To run it: docker compose -f docker-compose-etl.yaml run load-data
-  load-data:
-    container_name: etl_load_data
-    image: rclone/rclone:latest
-    volumes:
-      - project37:/data
-      - ~/.config/rclone/rclone.conf:/root/.config/rclone/rclone.conf:ro
-    entrypoint: /bin/sh
-    command:
-      - -c
-      - |
-        if [ -z "$RCLONE_CONTAINER" ]; then
-          echo "ERROR: RCLONE_CONTAINER is not set"
-          exit 1
-        fi
-        
-        echo "Cleaning up existing contents of container..."
-        rclone delete chi_tacc:$RCLONE_CONTAINER --rmdirs || true
-        
-        echo "Uploading data from /data/Project-37..."
-        rclone copy /data/Project-37 chi_tacc:$RCLONE_CONTAINER \
-          --progress \
-          --transfers=32 \
-          --checkers=16 \
-          --multi-thread-streams=4 \
-          --fast-list
-        
-        echo "Listing directories in container after load stage:"
-        rclone lsd chi_tacc:$RCLONE_CONTAINER
+        print("Dataset setup complete.")
+        EOF
+    restart: "no"
