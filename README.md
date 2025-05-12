@@ -52,3 +52,42 @@ In the data load phase, I used an etl_load_data container (based on rclone)
 to upload the processed dataset to an object store bucket 
 (chi_tacc:$RCLONE_CONTAINER) on Chameleon. 
 The service clears old contents, uploads the new dataset from /data/Project-37.
+
+### Data Pipeline Diagram
+```
+                        +-----------------------------+
+                        |     External Data Source:    |
+                        | MovieLens ZIP from NYU Box   |
+                        +-------------+---------------+
+                                      |
+                                      v
+                        +-------------+---------------+
+                        |       ETL Container          |
+                        | (docker-compose-etl.yaml)    |
+                        | - Extract                    |
+                        | - Transform                  |
+                        | - Load                       |
+                        +-------------+---------------+
+                                      |
+                                      v
+                        +-----------------------------+
+                        |  Chameleon Object Store      |
+                        | Mounted at /mnt/object       |
+                        | - /ml-192m                   |
+                        | - /training                  |
+                        | - /evaluation                |
+                        | - /testing                   |
+                        +-------------+---------------+
+                                      |
+                                   Used by 
+                                      |
+       +-------------------+      +----------------+       +----------------+
+       |     Jupyter       | ---> |    MLflow      | --->  |    Postgres    |
+       |                   |      |                |       |                |      
+       +-------------------+      +--------+-------+       +----------------+
+                                           |
+                                           v
+                                  +----------------+
+                                  |     MinIO      |
+                                  +----------------+
+```
