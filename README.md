@@ -41,6 +41,20 @@ link to their contributions in all repos here. -->
 | Zehao Li                        | Continuous X                       |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/zehao-li-cicd, https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/app-staging                             |
 
 
+### Component Details Readme (final updated readme / report)
+
+#### Model Training (Jiayi Zhang)
+- [Model Training Documentation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/Nick_Model_Training/README_MovieLens_Recommender.md)
+
+#### Model Serving (Ziqi Zhou)
+- [Model Serving Documentation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/abby-model-serving/README.md)
+
+#### CI/CD and Application (Zehao Li)
+- [CI/CD Implementation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/zehao-li-cicd)
+- [Application API and Frontend](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/final-app)
+
+#### Data Pipeline (Ziyi Huang)
+- [Data Pipeline Implementation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/ziyi-huang/data-pipeline)
 
 ### System diagram
 
