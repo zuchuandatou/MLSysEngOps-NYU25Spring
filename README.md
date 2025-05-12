@@ -1,3 +1,77 @@
+# Final Delivery - Unit 2/3 Continuous X
+
+This section documents the implementation of our Continuous Integration/Continuous Deployment (CI/CD) pipeline and infrastructure-as-code approach for the movie recommendation system.
+
+## Updated System Architecture
+
+![Updated System Architecture](images/updated_sys_diagram.png)
+
+## Infrastructure and Infrastructure-as-Code
+
+Our infrastructure is fully defined using Terraform, with all cloud resources and configurations managed as code. The infrastructure code can be found in our [IaC terraform dir](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/zehao-li-cicd/tf/kvm).
+
+Key components:
+- Kubernetes cluster provisioning (node 1 2 3)
+- Storage volumes (Block storage)
+- Network configurations
+- Security groups and access controls
+
+## CI/CD Pipeline
+
+We implemented a comprehensive CI/CD pipeline using Ansible and ArgoCD for workflow orchestration. The pipeline configuration can be found in our [ansible playbooks that run argocd](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/zehao-li-cicd/ansible/argocd).
+
+### Staged Deployment Process
+
+Our deployment strategy follows a three-stage approach:
+
+1. **Staging Environment**   
+https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/ansible/argocd/argocd_add_staging.yml
+
+2. **Canary Deployment**  
+https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/ansible/argocd/argocd_add_canary2.yml
+
+3. **Production Environment**  
+https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/ansible/argocd/argocd_add_prod.yml
+
+### Model Retraining and Deployment Workflow
+
+We implemented an automated workflow for model retraining and deployment:
+
+1. Trigger retraining pipeline
+2. Build new model container
+3. Register model in model registry
+4. Promote model through stages (staging → canary → production)
+5. Deploy updated model
+
+The workflow configuration can be found in our [workflow dir](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/zehao-li-cicd/workflows).
+
+![Deployment Workflow](images/deployment_workflow.png)
+
+## Application Implementation 
+
+We developed a complete application stack:
+
+### Backend (FastAPI)
+- Model serving API
+- RESTful endpoints for recommendations
+- Containerized deployment
+
+### Frontend (React)
+- Real-time recommendation updates
+
+### Demo Implementation
+- 3 dummy users with predefined watch histories
+- Basic user interaction simulation
+
+The application code can be found in our [application repository](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/app-staging).
+
+---
+
+# Final Develivery Readme
+
+
+
+
 ## Scalable MLOps System for Personalized Movie Recommendation with Real-Time Monitoring
 <!-- 
 Discuss: Value proposition: Your will propose a machine learning system that can be 
