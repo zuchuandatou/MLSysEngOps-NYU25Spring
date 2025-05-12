@@ -37,7 +37,7 @@ link to their contributions in all repos here. -->
 | All team members                | Rest of the project                |    -                                |
 | Jiayi Zhang                     | Model Training                     |    -                                |
 | Ziqi Zhou                       | Model Serving                      |    -                                |
-| Ziyi Huang                      | Data Pipeline                      |    -                                |
+| Ziyi Huang                      | Data Pipeline                      |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/ziyi-huang/data-pipeline                                |
 | Zehao Li                        | Continuous X                       |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/main?author=zuchuandatou                                |
 
 
