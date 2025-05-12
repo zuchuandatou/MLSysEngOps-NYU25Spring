@@ -127,7 +127,6 @@ Each model is tested for:
 
 This section describes deploying the ONNX version of the SSEPT recommendation model using Triton Inference Server for optimized, production-grade inference performance.
 
----
 
 ### Run with Docker Compose
 
@@ -146,7 +145,6 @@ docker logs triton_server
 
 should see `recommender_model_onnx` is loaded and marked `READY`.
 
----
 
 ### Benchmark with `perf_analyzer`
 
@@ -164,7 +162,6 @@ perf_analyzer -u triton_server:8000 -m recommender_model_onnx \
   --shape USER_ID:1 SEQ:50 -b 1 --concurrency-range 16
 ```
 
----
 
 ### Enable Multi-Instance Deployment
 
@@ -184,7 +181,6 @@ docker compose -f ~/serve-system-chi/docker/docker-compose-triton.yaml build tri
 docker compose -f ~/serve-system-chi/docker/docker-compose-triton.yaml up triton_server --force-recreate -d
 ```
 
----
 
 ### Summary
 
