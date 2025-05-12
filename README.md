@@ -38,7 +38,7 @@ link to their contributions in all repos here. -->
 | Jiayi Zhang                     | Model Training                     |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/Nick_Model_Training,https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/Nick_Model_Training                                |
 | Ziqi Zhou                       | Model Serving                      |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/abby-model-serving                               |
 | Ziyi Huang                      | Data Pipeline                      |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/ziyi-huang/data-pipeline, https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/ziyi-huang/data-pipeline/                                |
-| Zehao Li                        | Continuous X                       |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/zehao-li-cicd,https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/app-staging                             |
+| Zehao Li                        | Continuous X                       |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/zehao-li-cicd, https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/app-staging                             |
 
 
 
