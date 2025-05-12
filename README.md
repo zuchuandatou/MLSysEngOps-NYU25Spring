@@ -1,4 +1,8 @@
 ## Data pipeline
+### Reproduce and Run
+To reproduce, follow `1_create_server.ipynb`, `2_object.ipynb`, `3_block.ipynb`. These
+instructions are referred from Lab 8 instruction with appropriate changes based on our team's project proposal.
+
 ### Create a persistent storage on Chameleon
 I have created one ob
 ject store on Chameleon, to do this, I created and followed `1_create-server.ipynb` and `2_object.ipynb`. 
@@ -98,9 +102,3 @@ This can be monitored through running `nload ens3` command on `node-persist-proj
                                   |     MinIO      |
                                   +----------------+
 ```
-
-### Reproduce
-
-To reproduce, follow `1_create_server.ipynb`, `2_object.ipynb`, `3_block.ipynb`. These
-instructions are referred from Lab 8 instruction with appropriate changes based on our team's project proposal.
-
