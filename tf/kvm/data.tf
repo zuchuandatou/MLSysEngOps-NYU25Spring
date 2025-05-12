@@ -46,3 +46,6 @@ data "openstack_networking_secgroup_v2" "allow_19090" {
   name = "allow-19090-project37"
 }
 
+data "openstack_networking_secgroup_v2" "allow_8003" {
+  name = "allow-8003-project37"
+}
