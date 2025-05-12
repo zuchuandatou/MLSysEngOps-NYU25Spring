@@ -18,14 +18,22 @@ To summarize the steps I have taken:
   * `mlflow` contains experiment artifacts
 
 ##### Offline Data:
-- `ml-192m/` → which stores MovieLens 192M raw dataset and contains the raw ratings.csv
-- `training/` → Cleaned-up data
-- `models/` → Trained models
-- `logs/` → User activity logs
+For offline data, MovieLens 192M dataset is used, which contains user–movie interactions (userId, itemId), rating and timestamp.
+Data Lineage:
+* Original data: `rating.csv` from MovieLens 192M from external source.
+* Transformed data: `rating.cvs` stored persistently in `/mnt/object/ml-192m`
+* Divided data: 
+  * training data under `/mnt/object/training/movielens_192m_train.txt`
+  * evaluation data under `/mnt/object/evaluation/movielens_192m_eval.txt`
+  * testing data under `/mnt/object/testing/movielens_192m_test.txt`
 ##### Online Data: 
-I simulated real-user interactions to evaluate the SSE-PT model. I used evaluation dataset which had been divided during ETL pipeline (movielens_192m_eval.txt) to evaluate the model on unseen data. This evaluation file has been mounted from object store under  /mnt/object/evaluation.
+For online data, I simulated real-user interactions to evaluate the SSE-PT model. I used evaluation dataset which had 
+been divided during ETL pipeline (`movielens_192m_eval.txt`) to evaluate the model on unseen data. 
+This evaluation file has been mounted from object store under  `/mnt/object/evaluation`.
 
-The simulation logic contains in demo.ipynb under workspaces. I first cleaned and formatted by ID clipping that ensure userId and itemId are within training range of 10000. Then we pass a dummy user interaction sequence to model as user history.
+The simulation logic contains in `demo.ipynb` under `workspaces`. I first cleaned and formatted by ID clipping that 
+ensure userId and itemId are within training range of 10000. Then we pass a dummy user interaction sequence to model (`models/SSE_PT.pth`)
+as user history.
 
 This can be monitored through running `nload ens3` command on `node-persist-project37`.
 
