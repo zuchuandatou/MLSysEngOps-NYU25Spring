@@ -1,13 +1,17 @@
 ## Data pipeline
 ### Create a persistent storage on Chameleon
-I have created one object store on Chameleon, to do this, I created and followed `1_create-server.ipynb` and `2_object.ipynb`. 
+I have created one ob
+ject store on Chameleon, to do this, I created and followed `1_create-server.ipynb` and `2_object.ipynb`. 
 To summarize the steps I have taken:
 * Created a server named `node-persist-project37`. 
 * Created `object-persist-project37` under CHI@TACC, authenticate it from my compute instance
 * Retrieved code on our team github repo, and performed the ELT pipeline using docker (under `docker/docker-compose-etl`)
 * Mounted our object store to local file system
 
+![object-store-container.png](ziyi-huang-data-pipeline/imgs/object-store-container.png)
+
 In our object store, under `/mnt/object`, it contains the MovieLens raw, training, testing, evaluation dataset of ~6GB.
+![ls-mnt-object-output.png](ziyi-huang-data-pipeline/imgs/ls-mnt-object-output.png)
 
 I have created three block storage on Chameleon, to do this, I created and followed `3_block.ipynb`.
 To summarize the steps I have taken:
@@ -16,6 +20,8 @@ To summarize the steps I have taken:
   * `/mnt/block/postgres_data` contains the user info (userId and itemId)
   * `/mnt/block/minio_data` contains model artifacts
   * `mlflow` contains experiment artifacts
+
+![block-storage-volumn.png](ziyi-huang-data-pipeline/imgs/block-storage-volumn.png)
 
 ### Offline Data:
 For offline data, MovieLens 192M dataset is used, which contains user–movie interactions (userId, itemId), rating and timestamp.
