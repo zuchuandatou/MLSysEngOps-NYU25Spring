@@ -1,5 +1,5 @@
-### Data pipeline
-#### Create a persistent storage on Chameleon
+## Data pipeline
+### Create a persistent storage on Chameleon
 I have created one object store on Chameleon, to do this, I created and followed `1_create-server.ipynb` and `2_object.ipynb`. 
 To summarize the steps I have taken:
 * Created a server named `node-persist-project37`. 
@@ -17,7 +17,7 @@ To summarize the steps I have taken:
   * `/mnt/block/minio_data` contains model artifacts
   * `mlflow` contains experiment artifacts
 
-##### Offline Data:
+### Offline Data:
 For offline data, MovieLens 192M dataset is used, which contains user–movie interactions (userId, itemId), rating and timestamp.
 Data Lineage:
 * Original data: `rating.csv` from MovieLens 192M from external source.
@@ -26,7 +26,7 @@ Data Lineage:
   * training data under `/mnt/object/training/movielens_192m_train.txt`
   * evaluation data under `/mnt/object/evaluation/movielens_192m_eval.txt`
   * testing data under `/mnt/object/testing/movielens_192m_test.txt`
-##### Online Data: 
+### Online Data: 
 For online data, I simulated real-user interactions to evaluate the SSE-PT model. I used evaluation dataset which had 
 been divided during ETL pipeline (`movielens_192m_eval.txt`) to evaluate the model on unseen data. 
 This evaluation file has been mounted from object store under  `/mnt/object/evaluation`.
@@ -37,7 +37,7 @@ as user history.
 
 This can be monitored through running `nload ens3` command on `node-persist-project37`.
 
-##### Data Pipeline:
+### Data Pipeline:
 I created a docker compose file for ETL process under `docker/docker-compose-etl.yaml`.
 
 In data extract phase, I extracted the zip file movie lens 192M dataset from external source (https://nyu.box.com/s/5r8m3rvjfejcip7nqurf9jbpi5rw5ri1), 
