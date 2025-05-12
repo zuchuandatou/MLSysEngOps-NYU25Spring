@@ -2,6 +2,7 @@
 
 This section documents the implementation of our Continuous Integration/Continuous Deployment (CI/CD) pipeline and infrastructure-as-code approach for the movie recommendation system.
 
+some screenshots can be found here: https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/zehao-li-cicd/imgs
 ## Project Structure
 
 The project is organized into three main components:
