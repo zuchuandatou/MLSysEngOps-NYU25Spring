@@ -27,8 +27,6 @@ This project implements a **personalized movie recommendation system** using a *
 └── evaluation/     # test_8.npz ~ test_15.npz
 ```
 
-- For training efficiency, only **1/10 of the dataset files** are used in each phase.
-
 ---
 
 ## 🏗️ Model: SSEPT (Sequential Self-supervised Embedding + Transformer)
