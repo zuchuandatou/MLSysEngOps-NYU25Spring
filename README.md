@@ -23,9 +23,24 @@ To summarize the steps I have taken:
 - `models/` → Trained models
 - `logs/` → User activity logs
 ##### Online Data: 
-- Simulate user interaction with movie data
-##### Data Pipeline:
-[Data Sources] → [Ingestion] → [Cleaning] → [Feature Store]
-##### Difficulty Point: Interactive Dashboard
-- Use Grafana to visualize user activity pattern and recommendation performance
+I simulated real-user interactions to evaluate the SSE-PT model. I used evaluation dataset which had been divided during ETL pipeline (movielens_192m_eval.txt) to evaluate the model on unseen data. This evaluation file has been mounted from object store under  /mnt/object/evaluation.
 
+The simulation logic contains in demo.ipynb under workspaces. I first cleaned and formatted by ID clipping that ensure userId and itemId are within training range of 10000. Then we pass a dummy user interaction sequence to model as user history.
+
+This can be monitored through running `nload ens3` command on `node-persist-project37`.
+
+##### Data Pipeline:
+I created a docker compose file for ETL process under `docker/docker-compose-etl.yaml`.
+
+In data extract phase, I extracted the zip file movie lens 192M dataset from external source (https://nyu.box.com/s/5r8m3rvjfejcip7nqurf9jbpi5rw5ri1), 
+and unzipped it.
+
+In data transform, I sorted the ratings.csv file based on timestamps since our SSE_PT 
+is sequential based and the order of time of user activity need to be taken into consideration. 
+Then, I dropped the rating and timestamp column. Lastly, I split the transformed dataset into training (50%), 
+evaluation (25%), and testing (25%).
+
+In the data load phase, I used an etl_load_data container (based on rclone) 
+to upload the processed dataset to an object store bucket 
+(chi_tacc:$RCLONE_CONTAINER) on Chameleon. 
+The service clears old contents, uploads the new dataset from /data/Project-37.
