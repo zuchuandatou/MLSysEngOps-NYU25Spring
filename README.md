@@ -63,7 +63,6 @@ We implemented an automated workflow for model retraining and deployment:
 
 The workflow configuration can be found in our [workflow dir](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/zehao-li-cicd/workflows).
 
-![Deployment Workflow](images/deployment_workflow.png)
 
 ## Application Implementation 
 
@@ -83,13 +82,49 @@ We developed a complete application stack:
 
 The application code can be found in our [application repository](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/app-staging).
 
+
+## Load Testing Results
+
+We conducted load testing using Locust with the following configuration:
+- 10,000 concurrent users
+- Spawn rate of 100 users per second
+- Test duration: 5 minutes
+
+### Performance Metrics
+
+| Metric | Value |
+|--------|-------|
+| Total Requests | 14,812 |
+| Failed Requests | 1,330 (8.98%) |
+| Average Response Time | 102,377 ms |
+| Minimum Response Time | 237 ms |
+| Maximum Response Time | 202,077 ms |
+| Median Response Time | 99,000 ms |
+| Requests per Second | 49.10 |
+
+#### Response Time Distribution
+
+| Percentile | Response Time (ms) |
+|------------|-------------------|
+| Min | 237 |
+| Median | 99,000 |
+| Max | 202,077 |
+
+
+
 ---
 
-# Final Develivery Readme
 
 
 
 
+
+
+
+
+
+
+(Original Readme)
 ## Scalable MLOps System for Personalized Movie Recommendation with Real-Time Monitoring
 <!-- 
 Discuss: Value proposition: Your will propose a machine learning system that can be 
