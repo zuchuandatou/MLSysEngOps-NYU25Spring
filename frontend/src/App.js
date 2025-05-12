@@ -13,8 +13,7 @@ function App() {
   // This is a placeholder sequence
   const dummySequence = [333, 343, 4415, 534, 452];
 
-  // TMDb API configuration - Add your API key here
-  const TMDB_API_KEY = ''; // Add your TMDb API key here
+  const TMDB_API_KEY = 'fcf1468f0c45f856fecb7089d19e98ac';
   const TMDB_SEARCH_URL = 'https://api.themoviedb.org/3/search/movie';
   const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
   
