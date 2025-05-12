@@ -2,6 +2,19 @@
 
 This section documents the implementation of our Continuous Integration/Continuous Deployment (CI/CD) pipeline and infrastructure-as-code approach for the movie recommendation system.
 
+## Project Structure
+
+The project is organized into two main components:
+
+1. **Infrastructure as Code (IaC)**
+   - Located in [project_IaC](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/project_IaC.ipynb)
+   - Handles the provisioning and configuration of all cloud infrastructure
+   - Includes install Terraform / Ansible / Argo / k8s
+
+2. **Project Stages**
+   - Located in [project_stages](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/project_stages.ipynb)
+   - Run Ansible playbook for managing the implementation of our three-stage deployment process
+
 ## Updated System Architecture
 
 ![Updated System Architecture](images/updated_sys_diagram.png)
