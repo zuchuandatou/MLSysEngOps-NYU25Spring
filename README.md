@@ -4,7 +4,7 @@ This section documents the implementation of our Continuous Integration/Continuo
 
 ## Project Structure
 
-The project is organized into two main components:
+The project is organized into three main components:
 
 1. **Infrastructure as Code (IaC)**
    - Located in [project_IaC](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/project_IaC.ipynb)
@@ -14,6 +14,11 @@ The project is organized into two main components:
 2. **Project Stages**
    - Located in [project_stages](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/project_stages.ipynb)
    - Run Ansible playbook for managing the implementation of our three-stage deployment process
+
+3. **Project Lifecycles**
+   - Located in [project_lifecycles](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/zehao-li-cicd/project_lifecycles.ipynb)
+   - Run Ansible playbook for managing the model promotion workflow from staging to production
+   - Handles model retraining, containerization, and deployment across stages
 
 ## Updated System Architecture
 
