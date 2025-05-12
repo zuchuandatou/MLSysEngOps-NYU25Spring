@@ -21,7 +21,7 @@ spec:
       args:
         - |
           echo "Deploying model {{inputs.parameters.model-version}} to {{inputs.parameters.environment}}..."
-          tag="{{inputs.parameters.environment}}-1.0.{{inputs.parameters.model-version}}"
+          tag="{{inputs.parameters.environment}}-1.1.{{inputs.parameters.model-version}}"
           app_name="project37-{{inputs.parameters.environment}}"
 
           argocd login argocd-server.argocd.svc.cluster.local \
