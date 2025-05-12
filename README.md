@@ -8,6 +8,13 @@ status quo used in the business or service? What business metric are you going t
 judged on? (Note that the “service” does not have to be for general users; you can 
 propose a system for a science problem, for example.)
 -->
+![Final System Diagram](images/sys_diagram_final.png)
+(Fianl updated system diagram, rm Grafana, Kafka, Ray Train, Enhanced movielens dataset)
+
+
+
+
+
 
 
 Current recommendation systems, including Netflix’s, often rely heavily on behavioral data and content metadata, using static models that lack adaptability to rapidly changing user preferences. These systems may overlook richer data modalities like audio and video content, limiting their ability to personalize in cold-start or nuanced scenarios.  
@@ -15,6 +22,7 @@ Current recommendation systems, including Netflix’s, often rely heavily on beh
 Our project introduces an automated MLOps pipeline for personalized movie recommendations using the Enhanced MovieLens dataset which includes text, metadata, audio, and trailer transcriptions, and a Transformer-based model (SSE-PT). We streamline training, tuning, deployment, and monitoring using Ray, MLflow, FastAPI, and Kubernetes with GitOps support via ArgoCD and Helm.
 
 The system enables low-latency online inference, real-time performance tracking, and fast retraining cycles. Business metrics such as model responsiveness will guide evaluation, offering a scalable, adaptive alternative to traditional manual workflows.
+
 
 ### Contributors
 
