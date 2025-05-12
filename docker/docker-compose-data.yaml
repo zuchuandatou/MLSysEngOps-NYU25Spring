@@ -1,39 +1,18 @@
+version: "3.9"
+
 services:
-  init-data:
-    image: python:3.11
+  jupyter:
+    image: quay.io/jupyter/pytorch-notebook
+    container_name: jupyter-data
+    ports:
+      - "8888:8888"
+    shm_size: 8G
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - MOVIELENS_DATA_DIR=/mnt/data
     volumes:
-      - movielens:/mnt
-      - /home/cc/dataset/MovieLens:/input:ro
-    working_dir: /mnt
-    command:
-      - bash
-      - -c
-      - |
-        set -e
-        echo "Creating output directory..."
-        mkdir -p /mnt/MovieLens && cd /mnt/MovieLens
+      - ./serve-model-chi/workspace:/home/jovyan/work/
 
-        echo "Copying CSVs..."
-        cp /input/*.csv .
+      - ~/data:/mnt/data:ro
 
-        echo "Generating text embeddings..."
-        python3 - <<EOF
-        import pandas as pd
-        import numpy as np
-        from sklearn.feature_extraction.text import TfidfVectorizer
-
-        movies = pd.read_csv("movies.csv")
-        tags = pd.read_csv("tags.csv")
-
-        tag_map = tags.groupby("movieId")["tag"].apply(lambda x: " ".join(x)).to_dict()
-        text_data = movies["title"].fillna("") + " " + movies["movieId"].map(tag_map).fillna("")
-
-        vectorizer = TfidfVectorizer(max_features=256)
-        embeddings = vectorizer.fit_transform(text_data).toarray()
-        np.save("movie_text_embeddings.npy", embeddings)
-        EOF
-    restart: "no"
-
-volumes:
-  movielens: 
-    external: true
+    command: start-notebook.sh --NotebookApp.token=''
