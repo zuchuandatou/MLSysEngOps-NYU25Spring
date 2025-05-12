@@ -98,3 +98,9 @@ This can be monitored through running `nload ens3` command on `node-persist-proj
                                   |     MinIO      |
                                   +----------------+
 ```
+
+### Reproduce
+
+To reproduce, follow `1_create_server.ipynb`, `2_object.ipynb`, `3_block.ipynb`. These
+instructions are referred from Lab 8 instruction with appropriate changes based on our team's project proposal.
+
