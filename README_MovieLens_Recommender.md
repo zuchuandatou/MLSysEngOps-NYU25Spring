@@ -4,7 +4,7 @@ This project implements a **personalized movie recommendation system** using a *
 
 ---
 
-## 🧠 Project Goals
+## Project Goals
 
 - Build a deep learning-based movie recommender using implicit feedback.
 - Integrate **MLflow** for training experiment tracking.
@@ -14,7 +14,7 @@ This project implements a **personalized movie recommendation system** using a *
 
 ---
 
-## 📁 Dataset: MovieLens-20M (x16x32 NPZ Format)
+## Dataset: MovieLens-20M (x16x32 NPZ Format)
 
 - Source: [https://grouplens.org/datasets/movielens/20m](https://grouplens.org/datasets/movielens/20m)
 - Format: `.npz` files containing implicit interaction data as `[user_id, item_id]` pairs
@@ -29,7 +29,7 @@ This project implements a **personalized movie recommendation system** using a *
 
 ---
 
-## 🏗️ Model: SSEPT (Sequential Self-supervised Embedding + Transformer)
+## Model: SSEPT (Sequential Self-supervised Embedding + Transformer)
 
 - `user_embedding_layer`: Embeds user indices
 - `item_embedding_layer`: Embeds item indices
@@ -40,7 +40,7 @@ Model definition is located in: `train_memfix_amp.py`
 
 ---
 
-## 🔁 Retraining
+## Retraining
 
 - Pretrained model: `SSE_PT_tf.pth`
 - When retraining:
@@ -56,7 +56,7 @@ python3 train_memfix_amp.py --retrain
 
 ---
 
-## ⚙️ Training Setup
+## Training Setup
 
 - Trained using **PyTorch + MLflow**
 - Mixed Precision (AMP) via `torch.cuda.amp`
@@ -67,7 +67,7 @@ python3 train_memfix_amp.py --retrain
 
 ---
 
-## 📈 MLflow Logging
+## MLflow Logging
 
 Logged parameters:
 
@@ -77,7 +77,7 @@ Logged parameters:
 
 ---
 
-## 🐳 Docker and Data Integration
+## Docker and Data Integration
 
 - Dataset preparation via `docker-compose-data.yaml`
 - Preprocessed files copied or streamed into `/mnt/MovieLens-20M/organized`
@@ -85,7 +85,7 @@ Logged parameters:
 
 ---
 
-## 🚀 Optimization Notes
+## Optimization Notes
 
 - Used only 1/10th of `.npz` files to reduce memory and runtime
 - AMP enabled for speedup and reduced GPU memory
@@ -94,15 +94,11 @@ Logged parameters:
 
 ---
 
-## 🧪 Validation
+## Validation
 
 - Training and validation losses logged via MLflow
 - Trained model saved to disk and logged as artifact
 - Can be reloaded for evaluation or future retraining
 
 ---
-
-## ✅ Summary
-
-This pipeline demonstrates an efficient, scalable, and trackable approach to training a Transformer-based movie recommender on MovieLens-20M, adapted for Chameleon cloud environments and limited compute environments.
 
