@@ -112,6 +112,8 @@ def pad_or_truncate(seq: List[int], max_len: int) -> List[int]:
 
 
 def _unwrap_state_dict(raw: dict) -> dict:
+    if hasattr(raw, "state_dict"):          # covers nn.Module & lightning
+        return raw.state_dict()
     """Return the actual state‑dict no matter how the checkpoint was saved."""
     # If keys look like model weights, return as‑is
     if "user_embedding.weight" in raw or "item_embedding.weight" in raw:
