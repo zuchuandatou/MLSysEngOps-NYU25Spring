@@ -1,7 +1,42 @@
-Input: 
+Identify Requirements
+Customer Requirements
+Model Inference: The customer needs dynamic and in-time feedback -> needs us generat item recommendations based on the input user interactions ->  real-time inferences
 
-user_id: An integer representing the user making the request.
+1. Performance: high-throughput, low-latency inference. 
 
-sequence: A list of integers representing the item sequence for the user. The sequence could represent past interactions or a history of items that the user has interacted with.
+2. Scalability: As this is part of a larger system, it must support multiple concurrent requests, requiring an architecture that can scale based on traffic.
 
-top_k: An integer specifying how many top recommended items to return.
+3. Model Version Management: 
+for updates and rollback capabilities for models, -> be managed using MLFlow 
+
+
+Model Optimizations
+1. PyTorch Model on CPU (Eager Mode)
+In Eager Mode, PyTorch is computed incrementally, recomput all operations each time the data is processed
+推理速度和吞吐量：由于每个操作都需要实时执行计算图，推理的速度和吞吐量通常较慢，尤其是在大规模数据处理时，计算的资源利用率不高。
+性能瓶颈：Eager模式对硬件（例如多核处理器或GPU）的利用较低，尤其在进行大量计算时，它不能像编译模式那样提前优化计算图。因此，推理延迟较高，吞吐量受限。
+
+2. PyTorch Model on CPU (Compiled Mode)
+PyTorch会对模型的计算图进行优化
+延迟减少：通过编译优化，推理延迟显著降低。编译模式提前对计算图进行了优化，并根据硬件架构进行调整，因此处理效率更高。
+吞吐量提高：相比于Eager模式，Compiled模式在推理时能更好地利用CPU的资源，尤其是在进行批量推理时，吞吐量大大提升。
+性能瓶颈仍然存在：虽然延迟和吞吐量得到了提升，但仍然没有充分利用硬件加速（如多线程或GPU）。在复杂或大规模的应用中，推理性能仍然可能受到一定的限制。
+
+3. Graph Optimizations for ONNX Model
+Graph optimizations主要是通过减少冗余计算和节点，优化计算图的结构，从而减少推理延迟，显著提高推理速度。该优化方法特别适用于生产环境中的高并发推理场景。相比于传统的PyTorch模型，它能有效减小延迟并提升吞吐量，尤其是在99th Percentile Latency较低的情况下。
+optimize the structure of the computational graph by 
+reduce redundant computations and nodes, 
+is especially suitable for highly concurrent reasoning scenarios 
+
+
+4. Dynamic Quantization
+Dynamic Quantization采用了量化技术，通过将浮点模型转换为低精度（如INT8）来减少模型大小，并加速推理。在不需要额外的校准数据集的情况下，它能显著减小模型的存储空间，同时提升推理速度。尽管在延迟方面有一定增加（相比于Graph Optimizations），但Dynamic Quantization的吞吐量仍然较高，适用于资源有限的环境或对推理速度要求高的场景。
+reduce model size and speed up inference 
+by converting floating-point models to low precision (e.g., INT8). 
+without the need for additional calibration datasets, 
+suitable for resource-limited environments or scenarios that require high inference speed.
+
+5. Static Quantization
+Static Quantization使用了校准数据集来进一步优化模型，通过将模型转换为低精度（INT8）并对激活值和权重进行精细调整，从而进一步提升推理性能。与Dynamic Quantization相比，静态量化在不牺牲准确性的前提下，能够显著减少模型的存储占用，并进一步提高推理速度。该方法适用于需要高精度、低延迟的场景。
+uses a calibrated dataset to further optimize the model, 
+further improving inference performance by converting the model to low precision (INT8) and fine-tuning the activation values and weights. 
