@@ -1,0 +1,7 @@
+Input: 
+
+user_id: An integer representing the user making the request.
+
+sequence: A list of integers representing the item sequence for the user. The sequence could represent past interactions or a history of items that the user has interacted with.
+
+top_k: An integer specifying how many top recommended items to return.

@@ -1,11 +1,3 @@
-"""
-Minimal FastAPI API for the SSEPT sequential‑recommendation model
---------------------------------------------------------------
-Run:  uvicorn app:app --host 0.0.0.0 --port 8000
-POST: curl -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" \
-        -d '{"user_id": 42, "sequence": [10,11,23,99], "top_k": 5}'
-"""
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -15,36 +7,35 @@ import traceback
 import os
 import uvicorn
 
-# Import from utilities
 from utilities import build_model_from_ckpt, pad_or_truncate
 
-# Define Pydantic models for request/response validation
+# use FastAPI to create the API
+# input 
 class PredictRequest(BaseModel):
     user_id: int
-    sequence: List[int]
+    sequence: List[int] # list of items the user has interacted with (historical interaction)
     top_k: int = 1
-
+#output
 class PredictResponse(BaseModel):
     top_items: List[int]
 
 class TestResponse(BaseModel):
     message: str
 
-# Create FastAPI app
 app = FastAPI(title="SSEPT Recommendation API")
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for testing
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 DEVICE = torch.device("cpu")
-# Change this to your checkpoint path or set env var MODEL_PATH
 MODEL_PATH = "SSE_PT10kemb.pth"
+# load model from a checkpoint file 
 
 # Model initialization
 try:
@@ -65,7 +56,8 @@ except Exception as e:
     traceback.print_exc()
     raise RuntimeError(f"Failed to initialize model: {e}")
 
-
+#HTTP endpoints.
+ # /test (GET and POST): -> check if the API is working
 @app.get("/test", response_model=TestResponse)
 @app.post("/test", response_model=TestResponse)
 async def test_endpoint():
@@ -73,7 +65,9 @@ async def test_endpoint():
     print("Test endpoint called")
     return TestResponse(message="CORS is working! Your API is accessible from the frontend.")
 
-
+# /predict (POST): 
+# -> user sends a request ~user_id, sequence, top_k.
+# -> API returns the top-k predicted items 
 @app.post("/predict", response_model=PredictResponse)
 async def predict(request: PredictRequest):
     """
@@ -82,7 +76,6 @@ async def predict(request: PredictRequest):
     print(f"Processing request: user_id={request.user_id}, sequence={request.sequence}, top_k={request.top_k}")
 
     try:
-        # Tensor preparation
         seq_padded = pad_or_truncate(request.sequence, SEQ_LEN)
         user_tensor = torch.tensor([request.user_id], dtype=torch.long, device=DEVICE)
         seq_tensor = torch.tensor([seq_padded], dtype=torch.long, device=DEVICE)
@@ -109,4 +102,4 @@ if __name__ == "__main__":
     print("* API docs: http://127.0.0.1:8000/docs")
     print("* Test endpoint: http://127.0.0.1:8000/test")
     print("* Predict endpoint: http://127.0.0.1:8000/predict (POST)")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000) 
