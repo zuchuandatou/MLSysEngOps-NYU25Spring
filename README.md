@@ -8,6 +8,13 @@ status quo used in the business or service? What business metric are you going t
 judged on? (Note that the “service” does not have to be for general users; you can 
 propose a system for a science problem, for example.)
 -->
+![Final System Diagram](images/sys_diagram_final.png)
+(Fianl updated system diagram, rm Grafana, Kafka, Ray Train, Enhanced movielens dataset)
+
+
+
+
+
 
 
 Current recommendation systems, including Netflix’s, often rely heavily on behavioral data and content metadata, using static models that lack adaptability to rapidly changing user preferences. These systems may overlook richer data modalities like audio and video content, limiting their ability to personalize in cold-start or nuanced scenarios.  
@@ -15,6 +22,7 @@ Current recommendation systems, including Netflix’s, often rely heavily on beh
 Our project introduces an automated MLOps pipeline for personalized movie recommendations using the Enhanced MovieLens dataset which includes text, metadata, audio, and trailer transcriptions, and a Transformer-based model (SSE-PT). We streamline training, tuning, deployment, and monitoring using Ray, MLflow, FastAPI, and Kubernetes with GitOps support via ArgoCD and Helm.
 
 The system enables low-latency online inference, real-time performance tracking, and fast retraining cycles. Business metrics such as model responsiveness will guide evaluation, offering a scalable, adaptive alternative to traditional manual workflows.
+
 
 ### Contributors
 
@@ -27,12 +35,26 @@ link to their contributions in all repos here. -->
 | Name                            | Responsible for | Link to their commits in this repo |
 |---------------------------------|-----------------|------------------------------------|
 | All team members                | Rest of the project                |    -                                |
-| Jiayi Zhang                     | Model Training                     |    -                                |
-| Ziqi Zhou                       | Model Serving                      |    -                                |
-| Ziyi Huang                      | Data Pipeline                      |    -                                |
-| Zehao Li                        | Continuous X                       |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/main?author=zuchuandatou                                |
+| Jiayi Zhang                     | Model Training                     |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/Nick_Model_Training,https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/Nick_Model_Training                                |
+| Ziqi Zhou                       | Model Serving                      |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/abby-model-serving, https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/abby-model-serving                               |
+| Ziyi Huang                      | Data Pipeline                      |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/ziyi-huang/data-pipeline, https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/ziyi-huang/data-pipeline/                                |
+| Zehao Li                        | Continuous X                       |    https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/zehao-li-cicd, https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/commits/app-staging                             |
 
 
+### Component Details Readme (final updated readme / report)
+
+#### Model Training (Jiayi Zhang)
+- [Model Training Documentation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/Nick_Model_Training/README_MovieLens_Recommender.md)
+
+#### Model Serving (Ziqi Zhou)
+- [Model Serving Documentation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/blob/abby-model-serving/README.md)
+
+#### CI/CD and Application (Zehao Li)
+- [CI/CD Implementation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/zehao-li-cicd)
+- [Application API and Frontend](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/final-app)
+
+#### Data Pipeline (Ziyi Huang)
+- [Data Pipeline Implementation](https://github.com/zuchuandatou/MLSysEngOps-NYU25Spring/tree/ziyi-huang/data-pipeline)
 
 ### System diagram
 
