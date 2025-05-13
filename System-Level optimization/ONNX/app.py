@@ -16,7 +16,6 @@ import onnxruntime as ort
 import traceback
 import os
 
-# ---------------------- FastAPI 配置 ----------------------
 app = FastAPI(title="SSEPT ONNX Recommendation API")
 
 app.add_middleware(
@@ -27,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------- 请求/响应模型 ----------------------
 class PredictRequest(BaseModel):
     user_id: int
     sequence: List[int]
@@ -42,24 +40,21 @@ class TestResponse(BaseModel):
 class VersionResponse(BaseModel):
     model_version: str
 
-# ---------------------- 模型加载 ----------------------
 SEQ_LEN = 100
 MODEL_PATH = "models/SSE_PT10kemb_quant_dynamic.onnx"
 
 try:
     ort_session = ort.InferenceSession(MODEL_PATH, providers=["CPUExecutionProvider"])
-    print(f"✅ Model loaded from {MODEL_PATH}")
+    print(f" Model loaded from {MODEL_PATH}")
     input_names = [i.name for i in ort_session.get_inputs()]
-    print(f"✅ ONNX model input names: {input_names}")
+    print(f" ONNX model input names: {input_names}")
 except Exception as e:
     traceback.print_exc()
-    raise RuntimeError("❌ Failed to load ONNX model")
+    raise RuntimeError("Failed to load ONNX model")
 
-# ---------------------- 工具函数 ----------------------
 def pad_or_truncate(seq, max_len):
     return seq[-max_len:] + [0] * (max_len - len(seq))
 
-# ---------------------- 路由 ----------------------
 @app.get("/test", response_model=TestResponse)
 @app.post("/test", response_model=TestResponse)
 async def test_endpoint():
@@ -92,7 +87,7 @@ async def get_version():
         raise HTTPException(status_code=404, detail="versions.txt not found")
     return VersionResponse(model_version=VERSION_FILE.read_text().strip())
 
-# ---------------------- 入口 ----------------------
+
 if __name__ == "__main__":
     import uvicorn
     print("Starting FastAPI server at http://0.0.0.0:8000")
