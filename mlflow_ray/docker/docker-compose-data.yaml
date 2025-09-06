@@ -1,0 +1,54 @@
+volumes:
+  movielens20m:
+    external: true  # Uses externally created volume
+
+services:
+  init-data:
+    image: python:3.11
+    volumes:
+      - movielens20m:/data
+    working_dir: /data
+    command:
+      - bash
+      - -c
+      - |
+        set -e  # Stop on error
+        echo "Creating dataset directory..."
+        mkdir -p /data/MovieLens-20M && cd /data/MovieLens-20M
+
+        echo "Downloading dataset..."
+        curl -L https://files.grouplens.org/datasets/movielens/ml-20mx16x32.tar --output ml-20mx16x32.tar
+
+        echo "Extracting dataset..."
+        tar -xf ml-20mx16x32.tar
+        rm ml-20mx16x32.tar
+
+        echo "Organizing dataset..."
+        python3 - <<EOF
+        import os, shutil
+
+        dataset_base_dir = "/data/MovieLens-20M/ml-20mx16x32"
+        output_base_dir = "/data/MovieLens-20M/organized"
+        subdirs = ["training", "validation", "evaluation"]
+
+        # Create subdirectories
+        for subdir in subdirs:
+            os.makedirs(os.path.join(output_base_dir, subdir), exist_ok=True)
+
+        for fname in os.listdir(dataset_base_dir):
+            if fname.endswith('.npz'):
+                if fname.startswith('train'):
+                    dest_dir = os.path.join(output_base_dir, 'training')
+                elif fname.startswith('test'):
+                    num = int(fname.split('_')[-1].split('.')[0])
+                    if num < 8:
+                        dest_dir = os.path.join(output_base_dir, 'validation')
+                    else:
+                        dest_dir = os.path.join(output_base_dir, 'evaluation')
+                else:
+                    continue
+                shutil.move(os.path.join(dataset_base_dir, fname), os.path.join(dest_dir, fname))
+
+        print("Dataset setup complete.")
+        EOF
+    restart: "no"
