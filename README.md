@@ -9,7 +9,6 @@ judged on? (Note that the “service” does not have to be for general users; y
 propose a system for a science problem, for example.)
 -->
 ![Final System Diagram](images/sys_diagram_final.png)
-(Fianl updated system diagram, rm Grafana, Kafka, Ray Train, Enhanced movielens dataset)
 
 
 
